@@ -6,5 +6,5 @@ CXX_DEFINES =
 
 CXX_INCLUDES = -I/home/lucbr/Documents/DeepLearningLibary/headers -I/home/lucbr/Documents/DeepLearningLibary/headers/CPU -I/home/lucbr/Documents/DeepLearningLibary/headers/CUDA
 
-CXX_FLAGS = -std=c++17 -O0 -march=native -fopenmp
+CXX_FLAGS = -std=c++17 -Ofast -march=native -mtune=native -funroll-loops -fomit-frame-pointer -flto -fno-signed-zeros -fno-trapping-math -fassociative-math -fopenmp
 

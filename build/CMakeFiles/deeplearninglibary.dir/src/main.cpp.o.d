@@ -30,6 +30,8 @@ CMakeFiles/deeplearninglibary.dir/src/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/bits/types/FILE.h \
  /usr/include/x86_64-linux-gnu/bits/types/locale_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__locale_t.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar2-decl.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar2.h \
  /usr/include/c++/13/exception /usr/include/c++/13/bits/exception.h \
  /usr/include/c++/13/bits/exception_ptr.h \
  /usr/include/c++/13/bits/exception_defines.h \
@@ -118,16 +120,22 @@ CMakeFiles/deeplearninglibary.dir/src/main.cpp.o: \
  /usr/include/x86_64-linux-gnu/sys/select.h \
  /usr/include/x86_64-linux-gnu/bits/select.h \
  /usr/include/x86_64-linux-gnu/bits/types/sigset_t.h \
- /usr/include/alloca.h /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
+ /usr/include/x86_64-linux-gnu/bits/select2.h \
+ /usr/include/x86_64-linux-gnu/bits/select-decl.h /usr/include/alloca.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib-bsearch.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib-float.h \
+ /usr/include/x86_64-linux-gnu/bits/stdlib.h \
  /usr/include/c++/13/bits/std_abs.h /usr/include/c++/13/cstdio \
  /usr/include/stdio.h /usr/include/x86_64-linux-gnu/bits/types/__fpos_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/__fpos64_t.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_FILE.h \
  /usr/include/x86_64-linux-gnu/bits/types/cookie_io_functions_t.h \
  /usr/include/x86_64-linux-gnu/bits/stdio_lim.h \
- /usr/include/c++/13/cerrno /usr/include/errno.h \
- /usr/include/x86_64-linux-gnu/bits/errno.h /usr/include/linux/errno.h \
- /usr/include/x86_64-linux-gnu/asm/errno.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio2-decl.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio.h \
+ /usr/include/x86_64-linux-gnu/bits/stdio2.h /usr/include/c++/13/cerrno \
+ /usr/include/errno.h /usr/include/x86_64-linux-gnu/bits/errno.h \
+ /usr/include/linux/errno.h /usr/include/x86_64-linux-gnu/asm/errno.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
  /usr/include/x86_64-linux-gnu/bits/types/error_t.h \
  /usr/include/c++/13/bits/charconv.h \
@@ -150,30 +158,41 @@ CMakeFiles/deeplearninglibary.dir/src/main.cpp.o: \
  /usr/include/c++/13/bits/basic_ios.tcc \
  /usr/include/c++/13/bits/ostream.tcc /usr/include/c++/13/istream \
  /usr/include/c++/13/bits/istream.tcc \
- /home/lucbr/Documents/DeepLearningLibary/headers/CPU/modelCPU.h \
  /home/lucbr/Documents/DeepLearningLibary/headers/model.h \
  /home/lucbr/Documents/DeepLearningLibary/headers/backend.h \
- /home/lucbr/Documents/DeepLearningLibary/headers/matrix.h \
+ /home/lucbr/Documents/DeepLearningLibary/headers/CPU/modelCPU.h \
+ /home/lucbr/Documents/DeepLearningLibary/headers/CPU/activationCPU.h \
+ /home/lucbr/Documents/DeepLearningLibary/headers/activation.h \
  /home/lucbr/Documents/DeepLearningLibary/headers/CPU/matrixCPU.h \
+ /home/lucbr/Documents/DeepLearningLibary/headers/matrix.h \
  /usr/include/c++/13/vector /usr/include/c++/13/bits/stl_uninitialized.h \
  /usr/include/c++/13/bits/stl_vector.h \
  /usr/include/c++/13/bits/stl_bvector.h \
  /usr/include/c++/13/bits/vector.tcc /usr/include/c++/13/numeric \
  /usr/include/c++/13/bits/stl_numeric.h \
  /usr/include/c++/13/pstl/glue_numeric_defs.h \
- /usr/include/c++/13/pstl/execution_defs.h \
- /usr/include/c++/13/experimental/simd \
- /usr/include/c++/13/experimental/bits/simd_detail.h \
- /usr/include/c++/13/cstdint \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h /usr/include/stdint.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
- /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
- /usr/include/c++/13/experimental/bits/simd.h \
- /usr/include/c++/13/experimental/bits/simd_detail.h \
- /usr/include/c++/13/experimental/bits/numeric_traits.h \
- /usr/include/c++/13/bitset /usr/include/c++/13/cstring \
- /usr/include/string.h /usr/include/strings.h /usr/include/c++/13/cmath \
- /usr/include/math.h /usr/include/x86_64-linux-gnu/bits/math-vector.h \
+ /usr/include/c++/13/pstl/execution_defs.h /usr/include/c++/13/functional \
+ /usr/include/c++/13/bits/std_function.h \
+ /usr/include/c++/13/unordered_map \
+ /usr/include/c++/13/bits/unordered_map.h \
+ /usr/include/c++/13/bits/hashtable.h \
+ /usr/include/c++/13/bits/hashtable_policy.h \
+ /usr/include/c++/13/ext/aligned_buffer.h \
+ /usr/include/c++/13/bits/enable_special_members.h \
+ /usr/include/c++/13/bits/node_handle.h \
+ /usr/include/c++/13/bits/erase_if.h /usr/include/c++/13/array \
+ /usr/include/c++/13/compare /usr/include/c++/13/bits/stl_algo.h \
+ /usr/include/c++/13/bits/algorithmfwd.h \
+ /usr/include/c++/13/bits/stl_heap.h \
+ /usr/include/c++/13/bits/uniform_int_dist.h \
+ /usr/include/c++/13/bits/stl_tempbuf.h /usr/include/c++/13/fstream \
+ /usr/include/c++/13/bits/codecvt.h \
+ /usr/include/x86_64-linux-gnu/c++/13/bits/basic_file.h \
+ /usr/include/x86_64-linux-gnu/c++/13/bits/c++io.h \
+ /usr/include/c++/13/bits/fstream.tcc /usr/include/c++/13/sstream \
+ /usr/include/c++/13/bits/sstream.tcc /usr/include/c++/13/random \
+ /usr/include/c++/13/cmath /usr/include/math.h \
+ /usr/include/x86_64-linux-gnu/bits/math-vector.h \
  /usr/include/x86_64-linux-gnu/bits/libm-simd-decl-stubs.h \
  /usr/include/x86_64-linux-gnu/bits/flt-eval-method.h \
  /usr/include/x86_64-linux-gnu/bits/fp-logb.h \
@@ -194,22 +213,32 @@ CMakeFiles/deeplearninglibary.dir/src/main.cpp.o: \
  /usr/include/c++/13/tr1/modified_bessel_func.tcc \
  /usr/include/c++/13/tr1/poly_hermite.tcc \
  /usr/include/c++/13/tr1/poly_laguerre.tcc \
- /usr/include/c++/13/tr1/riemann_zeta.tcc /usr/include/c++/13/functional \
- /usr/include/c++/13/bits/std_function.h \
- /usr/include/c++/13/unordered_map \
- /usr/include/c++/13/bits/unordered_map.h \
- /usr/include/c++/13/bits/hashtable.h \
- /usr/include/c++/13/bits/hashtable_policy.h \
- /usr/include/c++/13/ext/aligned_buffer.h \
- /usr/include/c++/13/bits/enable_special_members.h \
- /usr/include/c++/13/bits/node_handle.h \
- /usr/include/c++/13/bits/erase_if.h /usr/include/c++/13/array \
- /usr/include/c++/13/compare /usr/include/c++/13/bits/stl_algo.h \
- /usr/include/c++/13/bits/algorithmfwd.h \
- /usr/include/c++/13/bits/stl_heap.h \
- /usr/include/c++/13/bits/uniform_int_dist.h \
- /usr/include/c++/13/bits/stl_tempbuf.h /usr/include/c++/13/utility \
- /usr/include/c++/13/bits/stl_relops.h \
+ /usr/include/c++/13/tr1/riemann_zeta.tcc /usr/include/c++/13/cstdint \
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/stdint.h /usr/include/stdint.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-uintn.h \
+ /usr/include/x86_64-linux-gnu/bits/stdint-least.h \
+ /usr/include/c++/13/bits/random.h \
+ /usr/include/x86_64-linux-gnu/c++/13/bits/opt_random.h \
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/pmmintrin.h \
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/emmintrin.h \
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/xmmintrin.h \
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/mmintrin.h \
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/mm_malloc.h \
+ /usr/include/c++/13/stdlib.h \
+ /usr/lib/gcc/x86_64-linux-gnu/13/include/mwaitintrin.h \
+ /usr/include/c++/13/bits/random.tcc /usr/include/c++/13/chrono \
+ /usr/include/c++/13/bits/chrono.h /usr/include/c++/13/ratio \
+ /usr/include/c++/13/ctime /usr/include/c++/13/bits/parse_numbers.h \
+ /usr/include/c++/13/experimental/simd \
+ /usr/include/c++/13/experimental/bits/simd_detail.h \
+ /usr/include/c++/13/experimental/bits/simd.h \
+ /usr/include/c++/13/experimental/bits/simd_detail.h \
+ /usr/include/c++/13/experimental/bits/numeric_traits.h \
+ /usr/include/c++/13/bitset /usr/include/c++/13/cstring \
+ /usr/include/string.h /usr/include/strings.h \
+ /usr/include/x86_64-linux-gnu/bits/strings_fortified.h \
+ /usr/include/x86_64-linux-gnu/bits/string_fortified.h \
+ /usr/include/c++/13/utility /usr/include/c++/13/bits/stl_relops.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/x86intrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/x86gprintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/ia32intrin.h \
@@ -227,7 +256,6 @@ CMakeFiles/deeplearninglibary.dir/src/main.cpp.o: \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/lzcntintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/lwpintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/movdirintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/mwaitintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/mwaitxintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/pconfigintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/popcntintrin.h \
@@ -250,12 +278,6 @@ CMakeFiles/deeplearninglibary.dir/src/main.cpp.o: \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/xtestintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/hresetintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/immintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/mmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/xmmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/mm_malloc.h \
- /usr/include/c++/13/stdlib.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/emmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/13/include/pmmintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/tmmintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/smmintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/wmmintrin.h \
@@ -318,16 +340,10 @@ CMakeFiles/deeplearninglibary.dir/src/main.cpp.o: \
  /usr/include/c++/13/experimental/bits/simd_x86_conversions.h \
  /usr/include/c++/13/experimental/bits/simd_math.h \
  /usr/include/c++/13/iomanip /usr/include/c++/13/locale \
- /usr/include/c++/13/bits/locale_facets_nonio.h /usr/include/c++/13/ctime \
+ /usr/include/c++/13/bits/locale_facets_nonio.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/time_members.h \
  /usr/include/x86_64-linux-gnu/c++/13/bits/messages_members.h \
- /usr/include/libintl.h /usr/include/c++/13/bits/codecvt.h \
- /usr/include/c++/13/bits/locale_facets_nonio.tcc \
+ /usr/include/libintl.h /usr/include/c++/13/bits/locale_facets_nonio.tcc \
  /usr/include/c++/13/bits/locale_conv.h \
- /usr/include/c++/13/bits/quoted_string.h /usr/include/c++/13/sstream \
- /usr/include/c++/13/bits/sstream.tcc \
- /home/lucbr/Documents/DeepLearningLibary/headers/CPU/activationCPU.h \
- /home/lucbr/Documents/DeepLearningLibary/headers/activation.h \
- /usr/include/c++/13/chrono /usr/include/c++/13/bits/chrono.h \
- /usr/include/c++/13/ratio /usr/include/c++/13/bits/parse_numbers.h \
+ /usr/include/c++/13/bits/quoted_string.h \
  /usr/lib/gcc/x86_64-linux-gnu/13/include/omp.h

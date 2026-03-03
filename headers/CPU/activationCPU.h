@@ -1,40 +1,59 @@
 #pragma once
 #include "activation.h"
 #include "matrixCPU.h"
+#include <functional>
 
-using activation_func = std::function<matrix<CPU>(const matrix<CPU>&)>;
-using loss_func = std::function<float(const matrix<CPU>&, const matrix<CPU>& )>;
-using loss_func_derivative = std::function<matrix<CPU>(const matrix<CPU>&, const matrix<CPU>&)>;
+
+using activation_fn = std::function<matrix<CPU>(const matrix<CPU>&)>;
+using loss_fn = std::function<float(const matrix<CPU>&, const matrix<CPU>& )>;
+using loss_derivative_fn = std::function<matrix<CPU>(const matrix<CPU>&, const matrix<CPU>&)>;
+
+
+using activation_type = const size_t;
+using loss_type = const size_t;
+using loss_derivative_type = const size_t;
+
+using optimizer_type = const size_t;
 
 
 template<>
 class activation<CPU>
 {   
-public:
-    static matrix<CPU> identity(const matrix<CPU>& a);
-    static matrix<CPU> ReLU(const matrix<CPU>& a);
-    static matrix<CPU> ELU(const matrix<CPU>& a);
-    static matrix<CPU> Sigmoid(const matrix<CPU>& a);
-    static matrix<CPU> Log_Sigmoid(const matrix<CPU>& a);
-    static matrix<CPU> Hard_Sigmoid(const matrix<CPU>& a);
-    static matrix<CPU> Tanh(const matrix<CPU>& a);
-    static matrix<CPU> Softmax(const matrix<CPU>& a);
-
-
-    static activation_func derivative_of(const activation_func& f);
-
 private:
+    static matrix<CPU> ones(const matrix<CPU>& a);
+    static matrix<CPU> identity(const matrix<CPU>& a);
+    static matrix<CPU> relu(const matrix<CPU>& a);
+    static matrix<CPU> elu(const matrix<CPU>& a);
+    static matrix<CPU> sigmoid(const matrix<CPU>& a);
+    static matrix<CPU> log_sigmoid(const matrix<CPU>& a);
+    static matrix<CPU> hard_sigmoid(const matrix<CPU>& a);
+    static matrix<CPU> tanh(const matrix<CPU>& a);
+    static matrix<CPU> softmax(const matrix<CPU>& a);
+
+
     static matrix<CPU> didentity(const matrix<CPU>& a);
-    static matrix<CPU> dReLU(const matrix<CPU>& a);
-    static matrix<CPU> dELU(const matrix<CPU>& a);
-    static matrix<CPU> dSigmoid(const matrix<CPU>& a);
-    static matrix<CPU> dLog_Sigmoid(const matrix<CPU>& a);
-    static matrix<CPU> dHard_Sigmoid(const matrix<CPU>& a);
-    static matrix<CPU> dTanh(const matrix<CPU>& a);
+    static matrix<CPU> drelu(const matrix<CPU>& a);
+    static matrix<CPU> delu(const matrix<CPU>& a);
+    static matrix<CPU> dsigmoid(const matrix<CPU>& a);
+    static matrix<CPU> dlog_sigmoid(const matrix<CPU>& a);
+    static matrix<CPU> dhard_sigmoid(const matrix<CPU>& a);
+    static matrix<CPU> dtanh(const matrix<CPU>& a);
 
    inline static float ELU_ALPHA_PARAM = 1;
 
-   
+public:
+
+    static activation_type IDENTITY     = 0;
+    static activation_type RELU         = 1;
+    static activation_type ELU          = 2;
+    static activation_type SIGMOID      = 3;
+    static activation_type LOG_SIGMOID  = 4;
+    static activation_type HARD_SIGMOID = 5;
+    static activation_type TANH         = 6;
+    static activation_type SOFTMAX      = 7;
+
+    static activation_fn get_fn(activation_type atype);
+    static activation_fn get_derivative_fn(activation_type atype);
 };
 
 
@@ -42,17 +61,44 @@ private:
 template<>
 class loss<CPU>
 {  
-    public:
-    static float Cross_Entropy(const matrix<CPU> &expected, const matrix<CPU> &result);
-    static float Quadratic(const matrix<CPU> &expected, const matrix<CPU> &result);
+private:
+    static float cross_entropy(const matrix<CPU> &expected, const matrix<CPU> &result);
+    static float quadratic(const matrix<CPU> &expected, const matrix<CPU> &result);
 
-    static loss_func_derivative derivative_of(const loss_func& f, const activation_func& afunc_output_layer);
-
-    //private:
-    static matrix<CPU> dCross_Entropy(const matrix<CPU> &expected, const matrix<CPU> &result);
-    static matrix<CPU> dCross_Entropy_inkl_Softmax(const matrix<CPU> &expected, const matrix<CPU> &result);
-    static matrix<CPU> dQuadratic(const matrix<CPU> &expected, const matrix<CPU> &result);
+    static matrix<CPU> dcross_entropy(const matrix<CPU> &probability, const matrix<CPU> &expected);
+    static matrix<CPU> dcross_entropy_inkl_softmax(const matrix<CPU> &probability, const matrix<CPU> &expected);
+    static matrix<CPU> dquadratic(const matrix<CPU> &probability, const matrix<CPU> &expected);
 
 
-    
+public:    
+    static loss_type CROSS_ENTROPY = 0;
+    static loss_type QUADRATIC = 1;
+
+    static loss_fn get_fn(loss_type ltype);
+    static loss_derivative_fn get_derivative_fn(loss_type ltype, activation_type atype);
+};
+
+
+template<>
+class optimizer<CPU>
+{
+public:
+    static optimizer_type STOCHASTIC_GRADIENT_DESCENT = 0;
+    static optimizer_type BATCH_GRADIENT_DESCENT = 1;
+    static optimizer_type MIN_BATCH_GRADIENT_DESCENT = 2;
+    static optimizer_type ADAM = 3;
+};
+
+
+
+
+template<>
+class adam_optimizer<CPU> : private optimizer<CPU>
+{
+public:
+    adam_optimizer(); 
+    double lr;
+    double beta1;
+    double beta2;
+    double epsilon;
 };

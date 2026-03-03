@@ -153,6 +153,54 @@ src/CPU/activationCPU.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/deeplearninglibary.dir/build.make CMakeFiles/deeplearninglibary.dir/src/CPU/activationCPU.cpp.s
 .PHONY : src/CPU/activationCPU.cpp.s
 
+src/CPU/classificatorCPU.o: src/CPU/classificatorCPU.cpp.o
+.PHONY : src/CPU/classificatorCPU.o
+
+# target to build an object file
+src/CPU/classificatorCPU.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/deeplearninglibary.dir/build.make CMakeFiles/deeplearninglibary.dir/src/CPU/classificatorCPU.cpp.o
+.PHONY : src/CPU/classificatorCPU.cpp.o
+
+src/CPU/classificatorCPU.i: src/CPU/classificatorCPU.cpp.i
+.PHONY : src/CPU/classificatorCPU.i
+
+# target to preprocess a source file
+src/CPU/classificatorCPU.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/deeplearninglibary.dir/build.make CMakeFiles/deeplearninglibary.dir/src/CPU/classificatorCPU.cpp.i
+.PHONY : src/CPU/classificatorCPU.cpp.i
+
+src/CPU/classificatorCPU.s: src/CPU/classificatorCPU.cpp.s
+.PHONY : src/CPU/classificatorCPU.s
+
+# target to generate assembly for a file
+src/CPU/classificatorCPU.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/deeplearninglibary.dir/build.make CMakeFiles/deeplearninglibary.dir/src/CPU/classificatorCPU.cpp.s
+.PHONY : src/CPU/classificatorCPU.cpp.s
+
+src/CPU/datasetCPU.o: src/CPU/datasetCPU.cpp.o
+.PHONY : src/CPU/datasetCPU.o
+
+# target to build an object file
+src/CPU/datasetCPU.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/deeplearninglibary.dir/build.make CMakeFiles/deeplearninglibary.dir/src/CPU/datasetCPU.cpp.o
+.PHONY : src/CPU/datasetCPU.cpp.o
+
+src/CPU/datasetCPU.i: src/CPU/datasetCPU.cpp.i
+.PHONY : src/CPU/datasetCPU.i
+
+# target to preprocess a source file
+src/CPU/datasetCPU.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/deeplearninglibary.dir/build.make CMakeFiles/deeplearninglibary.dir/src/CPU/datasetCPU.cpp.i
+.PHONY : src/CPU/datasetCPU.cpp.i
+
+src/CPU/datasetCPU.s: src/CPU/datasetCPU.cpp.s
+.PHONY : src/CPU/datasetCPU.s
+
+# target to generate assembly for a file
+src/CPU/datasetCPU.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/deeplearninglibary.dir/build.make CMakeFiles/deeplearninglibary.dir/src/CPU/datasetCPU.cpp.s
+.PHONY : src/CPU/datasetCPU.cpp.s
+
 src/CPU/matrixCPU.o: src/CPU/matrixCPU.cpp.o
 .PHONY : src/CPU/matrixCPU.o
 
@@ -237,6 +285,12 @@ help:
 	@echo "... src/CPU/activationCPU.o"
 	@echo "... src/CPU/activationCPU.i"
 	@echo "... src/CPU/activationCPU.s"
+	@echo "... src/CPU/classificatorCPU.o"
+	@echo "... src/CPU/classificatorCPU.i"
+	@echo "... src/CPU/classificatorCPU.s"
+	@echo "... src/CPU/datasetCPU.o"
+	@echo "... src/CPU/datasetCPU.i"
+	@echo "... src/CPU/datasetCPU.s"
 	@echo "... src/CPU/matrixCPU.o"
 	@echo "... src/CPU/matrixCPU.i"
 	@echo "... src/CPU/matrixCPU.s"

@@ -7,6 +7,12 @@ class activation;
 template<typename Backend>
 class loss;
 
+template<typename Backend>
+class optimizer;
+
+template<typename Backend>
+class adam_optimizer;
+
 #ifdef ENABLE_CUDA
     #include "activiationCUDA.cu"
     using Activation = activation<CUDA>;
@@ -15,4 +21,7 @@ class loss;
     #include "activationCPU.h"
     using Activation = activation<CPU>;
     using Loss = loss<CPU>;
+    using Optimizer = optimizer<CPU>;
+    using ADAM_Optimizer = adam_optimizer<CPU>;
+
 #endif

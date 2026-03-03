@@ -1,4 +1,14 @@
 #include "activationCPU.h"
+#include <cmath>
+
+
+matrix<CPU> activation<CPU>::ones(const matrix<CPU> &a)
+{
+    matrix<CPU> result = a;
+    result.set(1);
+    return a;
+}
+
 
 matrix<CPU> activation<CPU>::identity(const matrix<CPU> &a)
 {
@@ -6,123 +16,52 @@ matrix<CPU> activation<CPU>::identity(const matrix<CPU> &a)
     return result;
 }
 
-matrix<CPU> activation<CPU>::ReLU(const matrix<CPU> &a)
+matrix<CPU> activation<CPU>::relu(const matrix<CPU> &a)
 {
-    matrix<CPU> result(a.get_shape());
-    const size_t limit = (a.size() / w) * w;
-    size_t i = 0;
-    fsimd v;
-
-
-    for(; i < limit; i += w)
-    {
-        v.copy_from(&a[i], stdx::element_aligned);
-        where(v < 0, v) = -v;
-        v.copy_to(&result[i], stdx::element_aligned);
-    }
+    matrix<CPU> result(a.rows(), a.columns());
     
-    for(; i < a.size(); i++)
-    {
-        float _d = a[i];
-        result[i] = _d > 0 ? _d : 0;
-    }
+    for(int i = 0;i < a.size(); i++)
+        result[i] = a[i] > 0 ? a[i] : 0; 
        
+    return result;
+}
+
+matrix<CPU> activation<CPU>::elu(const matrix<CPU> &a)
+{
+    matrix<CPU> result(a.rows(), a.columns());
+    
+    for(int i = 0; i < a.size(); i++)
+        result[i] = a[i] > 0 ? a[i] : ELU_ALPHA_PARAM * (1 - std::exp(a[i]));
 
     return result;
 }
 
-matrix<CPU> activation<CPU>::ELU(const matrix<CPU> &a)
+matrix<CPU> activation<CPU>::sigmoid(const matrix<CPU> &a)
 {
-
-
-    matrix<CPU> result(a.get_shape());
-    const size_t limit = (a.size() / w) * w;
-    size_t i = 0;
-    fsimd v;
-
-
-    for(; i < limit; i += w)
-    {
-        v.copy_from(&a[i], stdx::element_aligned);
-        where(v < 0, v) = ELU_ALPHA_PARAM * (stdx::exp(v) - 1);
-        v.copy_to(&result[i], stdx::element_aligned);
-    }
+    matrix<CPU> result(a.rows(), a.columns());
     
-    for(; i < a.size(); i++)
-    {
-        float _d = a[i];
-        result[i] = _d > 0 ? _d : ELU_ALPHA_PARAM * (std::exp(_d) - 1);
-    }
-
-    return result;
-}
-
-matrix<CPU> activation<CPU>::Sigmoid(const matrix<CPU> &a)
-{
-    matrix<CPU> result(a.get_shape());
-    const size_t limit = (a.size() / w) * w;
-    size_t i = 0;
-    fsimd v;
-
-    for(; i < limit; i += w)
-    {
-        v.copy_from(&a[i], stdx::element_aligned);
-        v = 1 / (1 + stdx::exp(-v));
-        v.copy_to(&result[i], stdx::element_aligned);
-    }
     
-    for(; i < a.size(); i++)
-    {
+    for(int i = 0; i < a.size(); i++)
         result[i] = 1 / (1 + std::exp(-a[i]));
-    }
-       
-
+    
     return result;
 }
 
-matrix<CPU> activation<CPU>::Log_Sigmoid(const matrix<CPU> &a)
+matrix<CPU> activation<CPU>::log_sigmoid(const matrix<CPU> &a)
 {
-    matrix<CPU> result(a.get_shape());
-    const size_t limit = (a.size() / w) * w;
-    size_t i = 0;
-    fsimd v;
-
-    for(; i < limit; i += w)
-    {
-        v.copy_from(&a[i], stdx::element_aligned);
-        v = stdx::log(1 / (1 + stdx::exp(-v)));
-        v.copy_to(&result[i], stdx::element_aligned);
-    }
+    matrix<CPU> result(a.rows(), a.columns());
     
-    for(; i < a.size(); i++)
-    {
+    for(int i = 0; i < a.size(); i++)
         result[i] = std::log(1 / (1 + std::exp(-a[i])));
-    }
-       
-
+    
     return result;
 }
 
-matrix<CPU> activation<CPU>::Hard_Sigmoid(const matrix<CPU> &a)
+matrix<CPU> activation<CPU>::hard_sigmoid(const matrix<CPU> &a)
 {
-    matrix<CPU> result(a.get_shape());
-    const size_t limit = (a.size() / w) * w;
-    size_t i = 0;
-    fsimd v, _x;
-
-    for(; i < limit; i += w)
-    {
-        v.copy_from(&a[i], stdx::element_aligned);
-        _x = v;
-        v = v / 6 + 1/2;
-
-        where(_x < -3, v) = 0;
-        where(_x > 3, v) = 0;
-
-        v.copy_to(&result[i], stdx::element_aligned);
-    }
+    matrix<CPU> result(a.rows(), a.columns());
     
-    for(; i < a.size(); i++)
+    for(int i = 0; i < a.size(); i++)
     {
         float _d = a[i];
         
@@ -138,21 +77,10 @@ matrix<CPU> activation<CPU>::Hard_Sigmoid(const matrix<CPU> &a)
     return result;
 }
 
-matrix<CPU> activation<CPU>::Tanh(const matrix<CPU> &a)
+matrix<CPU> activation<CPU>::tanh(const matrix<CPU> &a)
 {
-    matrix<CPU> result(a.get_shape());
-    const size_t limit = (a.size() / w) * w;
-    size_t i = 0;
-    fsimd v;
-
-    for(; i < limit; i += w)
-    {
-        v.copy_from(&a[i], stdx::element_aligned);
-        v = stdx::tanh(v);
-        v.copy_to(&result[i], stdx::element_aligned);
-    }
-    
-    for(; i < a.size(); i++)
+    matrix<CPU> result(a.rows(), a.columns());
+    for(int i = 0; i < a.size(); i++)
     {
         result[i] = std::tanh(a[i]); 
     }
@@ -161,89 +89,41 @@ matrix<CPU> activation<CPU>::Tanh(const matrix<CPU> &a)
     return result;
 }
 
-matrix<CPU> activation<CPU>::Softmax(const matrix<CPU> &a)
+matrix<CPU> activation<CPU>::softmax(const matrix<CPU> &a)
 {
-    
-    const size_t limit = (a.size() / w) * w;
-    size_t i = 0;
-    fsimd exp_sum_simd(0), v;
     matrix<CPU> result = a;
-    
 
-    for(; i < limit; i += w)
-    {
-        v.copy_from(&a[i], stdx::element_aligned);
-        exp_sum_simd += stdx::exp(-v); 
+    // 1. Finde den Maximalwert in der Matrix
+    float max_val = a[0];
+    for(int i = 1; i < a.size(); i++) {
+        if(a[i] > max_val) max_val = a[i];
     }
 
-    float exp_sum = stdx::reduce(exp_sum_simd, std::plus{});
-    for(; i < a.size(); i++)
-        exp_sum += std::exp(-a[i]);
-    
-    i = 0;
-    for(; i < limit; i += w)
-    {
-        v.copy_from(&a[i], stdx::element_aligned);
-        v = stdx::exp(-v) / exp_sum;
-        v.copy_to(&result[i], stdx::element_aligned); 
+    // 2. Summe berechnen mit (a[i] - max_val)
+    float exp_sum = 0;
+    for(int i = 0; i < a.size(); i++) {
+        exp_sum += std::exp(a[i] - max_val);
     }
 
-    for(; i < result.size(); i++)
-        result[i] = std::exp(-a[i]) / exp_sum;
-
+    // 3. Ergebnis berechnen
+    for(int i = 0; i < result.size(); i++) {
+        result[i] = std::exp(a[i] - max_val) / exp_sum;
+    }
 
     return result;
 }
 
-activation_func activation<CPU>::derivative_of(const activation_func &f)
-{
-    if(f.target<decltype(&activation<CPU>::identity)>())
-        return activation<CPU>::didentity;
-
-    if(f.target<decltype(&activation<CPU>::ReLU)>())
-        return activation<CPU>::dReLU;
-
-    if(f.target<decltype(&activation<CPU>::ELU)>())
-        return activation<CPU>::dELU;
-
-    if(f.target<decltype(&activation<CPU>::Sigmoid)>())
-        return activation<CPU>::dSigmoid;
-
-    if(f.target<decltype(&activation<CPU>::Log_Sigmoid)>())
-        return activation<CPU>::dLog_Sigmoid;
-
-    if(f.target<decltype(&activation<CPU>::Hard_Sigmoid)>())
-        return activation<CPU>::dHard_Sigmoid;
-
-    if(f.target<decltype(&activation<CPU>::Tanh)>())
-        return activation<CPU>::dTanh;
-
-    throw std::runtime_error("No derivative registered for activation");
-}
-
 matrix<CPU> activation<CPU>::didentity(const matrix<CPU> &a)
 {
-    matrix<CPU> result(a.get_shape(), 1);
+    matrix<CPU> result(a.rows(), a.columns(), 1);
     return (matrix<CPU>) result;
 }
 
-matrix<CPU> activation<CPU>::dReLU(const matrix<CPU> &a)
+matrix<CPU> activation<CPU>::drelu(const matrix<CPU> &a)
 {
-    
-    matrix<CPU> result(a.get_shape());
-    const size_t limit = (a.size() / w) * w;
-    size_t i = 0;
-    fsimd v;
+    matrix<CPU> result(a.rows(), a.columns());
 
-    for(; i < limit; i += w)
-    {
-        v.copy_from(&a[i], stdx::element_aligned);
-        where(v <= 0, v) = 0;
-        where(v > 0, v) = 1;
-        v.copy_to(&result[i], stdx::element_aligned);
-    }
-    
-    for(; i < a.size(); i++)
+    for(int i = 0; i < a.size(); i++)
     {
         float _d = a[i];
         
@@ -256,22 +136,11 @@ matrix<CPU> activation<CPU>::dReLU(const matrix<CPU> &a)
     return result;
 }
 
-matrix<CPU> activation<CPU>::dELU(const matrix<CPU> &a)
+matrix<CPU> activation<CPU>::delu(const matrix<CPU> &a)
 {
-    matrix<CPU> result(a.get_shape());
-    const size_t limit = (a.size() / w) * w;
-    size_t i = 0;
-    fsimd v;
-
-    for(; i < limit; i += w)
-    {
-        v.copy_from(&a[i], stdx::element_aligned);
-        where(v > 0, v) = 1;
-        where(v <= 0, v) = ELU_ALPHA_PARAM * stdx::exp(v);
-        v.copy_to(&result[i], stdx::element_aligned);
-    }
+    matrix<CPU> result(a.rows(), a.columns());
     
-    for(; i < a.size(); i++)
+    for(int i = 0; i < a.size(); i++)
     {
         float _d = a[i];
         if(_d <= 0)
@@ -283,35 +152,23 @@ matrix<CPU> activation<CPU>::dELU(const matrix<CPU> &a)
     return result;
 }
 
-matrix<CPU> activation<CPU>::dSigmoid(const matrix<CPU> &a)
+matrix<CPU> activation<CPU>::dsigmoid(const matrix<CPU> &a)
 {
-    matrix<CPU> sig = Sigmoid(a);
-    return sig * (1 - sig);
+    matrix<CPU> sig = sigmoid(a);
+    return sig % (1 - sig);
 }
 
-matrix<CPU> activation<CPU>::dLog_Sigmoid(const matrix<CPU> &a)
+matrix<CPU> activation<CPU>::dlog_sigmoid(const matrix<CPU> &a)
 {
-    matrix<CPU> sig = Sigmoid(a);
+    matrix<CPU> sig = sigmoid(a);
     return 1 - sig;
 }
 
-matrix<CPU> activation<CPU>::dHard_Sigmoid(const matrix<CPU> &a)
+matrix<CPU> activation<CPU>::dhard_sigmoid(const matrix<CPU> &a)
 {
-    matrix<CPU> result(a.get_shape());
-    const size_t limit = (a.size() / w) * w;
-    size_t i = 0;
-    fsimd v, _x;
 
-    for(; i < limit; i += w)
-    {
-        v.copy_from(&a[i], stdx::element_aligned);
-        _x = v;
-        where(_x < -3 || _x > 3 , v) = 0;
-        where( 3 >=_x && _x >= -3, v) = 1/6;
-        v.copy_to(&result[i], stdx::element_aligned);
-    }
-    
-    for(; i < a.size(); i++)
+    matrix<CPU> result(a.rows(), a.columns());
+    for(int i = 0; i < a.size(); i++)
     {   
         result[i] = a[i] > 3 || a[i] < -3 ? 0 : 1/6;
     }
@@ -319,23 +176,11 @@ matrix<CPU> activation<CPU>::dHard_Sigmoid(const matrix<CPU> &a)
     return result;
 }
 
-matrix<CPU> activation<CPU>::dTanh(const matrix<CPU> &a)
+matrix<CPU> activation<CPU>::dtanh(const matrix<CPU> &a)
 {
-    matrix<CPU> result(a.get_shape());
-    const size_t limit = (a.size() / w) * w;
-    size_t i = 0;
-    fsimd v;
-
-    for(; i < limit; i += w)
+    matrix<CPU> result(a.rows(), a.columns());
+    for(int i = 0; i < a.size(); i++)
     {
-        v.copy_from(&a[i], stdx::element_aligned);
-        v = 1 / (stdx::cosh(v) * stdx::cosh(v));
-        v.copy_to(&result[i], stdx::element_aligned);
-    }
-    
-    for(; i < a.size(); i++)
-    {
-    
         result[i] = 1 / (std::cosh(a[i]) * std::cosh(a[i]));
     }
        
@@ -343,64 +188,102 @@ matrix<CPU> activation<CPU>::dTanh(const matrix<CPU> &a)
     return result;
 }
 
+activation_fn activation<CPU>::get_fn(activation_type atype)
+{
+    switch (atype)
+    {
+        case activation<CPU>::IDENTITY:
+            return activation<CPU>::identity;
 
+        case activation<CPU>::RELU:
+            return activation<CPU>::relu;
 
+        case activation<CPU>::ELU:
+            return activation<CPU>::elu;
 
+        case activation<CPU>::SIGMOID:
+            return activation<CPU>::sigmoid;
 
+        case activation<CPU>::LOG_SIGMOID:
+            return activation<CPU>::log_sigmoid;
 
-float loss<CPU>::Cross_Entropy(const matrix<CPU> &expected, const matrix<CPU> &probability)
+        case activation<CPU>::HARD_SIGMOID:
+            return activation<CPU>::hard_sigmoid;
+
+        case activation<CPU>::TANH:
+            return activation<CPU>::tanh;
+
+        case activation<CPU>::SOFTMAX:
+            return activation<CPU>::softmax;
+
+        default:
+            throw std::invalid_argument("Unknown activation type");
+    }
+}
+
+activation_fn activation<CPU>::get_derivative_fn(activation_type atype)
+{
+    switch (atype)
+    {
+        case activation<CPU>::IDENTITY:
+            return activation<CPU>::didentity;
+
+        case activation<CPU>::RELU:
+            return activation<CPU>::drelu;
+
+        case activation<CPU>::ELU:
+            return activation<CPU>::delu;
+
+        case activation<CPU>::SIGMOID:
+            return activation<CPU>::dsigmoid;
+
+        case activation<CPU>::LOG_SIGMOID:
+            return activation<CPU>::dlog_sigmoid;
+
+        case activation<CPU>::HARD_SIGMOID:
+            return activation<CPU>::dhard_sigmoid;
+
+        case activation<CPU>::TANH:
+            return activation<CPU>::dtanh;
+
+        case activation<CPU>::SOFTMAX:
+            return activation<CPU>::didentity;
+
+        default:
+            throw std::invalid_argument("Unknown activation type");
+    }
+}
+
+float loss<CPU>::cross_entropy(const matrix<CPU> &probability, const matrix<CPU> &expected)
 {
     float sum = 0;
+    float epsilon = 1e-15f; 
+
     for(int i = 0; i < expected.size(); i++)
-        if(expected[i] != 0)
-            sum += std::log(probability[i]);
+    {
+        if(expected[i] > 0)
+        {
+            float p = std::max(probability[i], epsilon);
+            sum -= expected[i] * std::log(p);
+        }
+    }
     return sum;
 }
 
-float loss<CPU>::Quadratic(const matrix<CPU> &expected, const matrix<CPU> &probability)
+float loss<CPU>::quadratic(const matrix<CPU> &probability, const matrix<CPU> &expected)
 {
     float sum = 0;
-    const size_t limit = (expected.size() / w) * w;
 
-    size_t i = 0;
-
-    fsimd exp, prob, v, sum_simd(0);
-    for(; i < limit; i += w)
-    {
-        exp.copy_from(&expected[i], stdx::element_aligned );
-        prob.copy_from(&probability[i], stdx::element_aligned);
-
-        v = exp - prob;
-        v *= v;
-        sum_simd += v;
-    }
-
-    sum = stdx::reduce(sum_simd, std::plus{});
-
-    for(; i < expected.size(); i++)
+    for(int i = 0; i < expected.size(); i++)
         sum += (probability[i] - expected[i]) * (probability[i] - expected[i]);
 
     return sum * 1/ expected.size();
 }
 
-loss_func_derivative loss<CPU>::derivative_of(const loss_func &f, const activation_func& afunc_output_layer)
+
+matrix<CPU> loss<CPU>::dcross_entropy(const matrix<CPU> &probability, const matrix<CPU> &expected)
 {
-    if(f.target<decltype(&loss<CPU>::Quadratic)>())
-        return loss<CPU>::dQuadratic;
-
-
-    if (afunc_output_layer.target<decltype(&activation<CPU>::Softmax)>() && f.target<decltype(&loss<CPU>::Cross_Entropy)>())
-        return loss<CPU>::dCross_Entropy_inkl_Softmax;
-
-    if(f.target<decltype(&loss<CPU>::Cross_Entropy)>())
-        return loss<CPU>::dCross_Entropy;
-    
-    throw std::runtime_error("No derivative registered for loss func");
-}
-
-matrix<CPU> loss<CPU>::dCross_Entropy(const matrix<CPU> &expected, const matrix<CPU> &probability)
-{
-    matrix<CPU> grad(probability.get_shape(), 0);
+    matrix<CPU> grad(probability.rows(), probability.columns(), 0);
 
     #pragma omp parallel for
     for (size_t i = 0; i < probability.size(); ++i)
@@ -413,46 +296,55 @@ matrix<CPU> loss<CPU>::dCross_Entropy(const matrix<CPU> &expected, const matrix<
     
 }
 
-matrix<CPU> loss<CPU>::dCross_Entropy_inkl_Softmax(const matrix<CPU> &expected, const matrix<CPU> &probability)
+matrix<CPU> loss<CPU>::dcross_entropy_inkl_softmax(const matrix<CPU> &probability, const matrix<CPU> &expected)
 {
-    matrix<CPU> grad(probability.get_shape());
+    matrix<CPU> grad(probability.rows(), probability.columns(), 0);
 
-    const size_t limit = (expected.size() / w) * w;
-    size_t i = 0;
-    fsimd prob, exp, v;
-    
-    for(; i < limit; i++)
-    {
-        prob.copy_from(&probability[i], stdx::element_aligned);
-        exp.copy_from(&expected[i],stdx::element_aligned);
-
-        v = prob - exp;
-        v.copy_to(&grad[i], stdx::element_aligned);
-    }
-
-    for (; i < expected.size(); i++)
+    for (int i = 0; i < expected.size(); i++)
         grad[i] = probability[i] - expected[i];
     return grad;
 }
 
-matrix<CPU> loss<CPU>::dQuadratic(const matrix<CPU> &expected, const matrix<CPU> &probability)
+matrix<CPU> loss<CPU>::dquadratic(const matrix<CPU> &probability, const matrix<CPU> &expected)
 {
-    matrix<CPU> grad(probability.get_shape());
-    const size_t limit = (expected.size() / w) * w;
-    size_t i = 0;
-    fsimd prob, exp, v;
-    fsimd size((float)expected.size());
+    matrix<CPU> grad(probability.rows(), probability.columns(), 0);
 
-    for(; i < limit; i++)
-    {
-        prob.copy_from(&probability[i], stdx::element_aligned);
-        exp.copy_from(&expected[i],stdx::element_aligned);
-
-        v = 2 * (prob - exp) / size;
-        v.copy_to(&grad[i], stdx::element_aligned);
-    }
-
-    for (; i < expected.size(); i++)
-        grad[i] = 2 * (probability[i] - expected[i]) / (float)expected.size() ;
+    for (int i = 0; i < expected.size(); i++)
+        grad[i] = 2 * (probability[i] - expected[i]);
     return grad;
+}
+
+loss_fn loss<CPU>::get_fn(loss_type ltype)
+{
+    switch (ltype)
+    {
+        case loss<CPU>::CROSS_ENTROPY:
+            return loss<CPU>::cross_entropy;
+
+        case loss<CPU>::QUADRATIC:
+            return loss<CPU>::quadratic;
+
+        default:
+            throw std::invalid_argument("Unknown loss type");
+    }
+}
+
+loss_derivative_fn loss<CPU>::get_derivative_fn(loss_type ltype, activation_type atype)
+{
+    switch (ltype)
+    {
+        case loss<CPU>::CROSS_ENTROPY:
+        {
+            if (atype == activation<CPU>::SOFTMAX)
+                return loss<CPU>::dcross_entropy_inkl_softmax;
+            else
+                return loss<CPU>::dcross_entropy;
+        }
+
+        case loss<CPU>::QUADRATIC:
+            return loss<CPU>::dquadratic;
+
+        default:
+            throw std::invalid_argument("Unknown loss type");
+    }
 }
