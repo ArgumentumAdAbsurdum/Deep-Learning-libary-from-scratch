@@ -1,6 +1,6 @@
 #include "DeepModel.h"
 #include "modelCPU.h"
-
+#include <algorithm>
 
 
 dataset<CPU>::dataset()
@@ -8,11 +8,12 @@ dataset<CPU>::dataset()
     
 }
 
+
 dataset<CPU>::dataset(const std::string filename, size_t output_col)
 {
     std::ifstream file(filename); 
     if (!file.is_open()) 
-        throw std::runtime_error("Cannot open CSV file: " + filename); 
+        throw std::runtime_error("dataset : Cannot open CSV file: " + filename); 
 
     std::string line;
     while (std::getline(file, line)) 
@@ -36,6 +37,8 @@ dataset<CPU>::dataset(const std::string filename, size_t output_col)
         this->input.push_back(matrix<CPU>(input_row.size(), 1, input_row));
         this->expected.push_back(matrix<CPU>(1,1, current_output)); 
     }
+
+    std::cout << "[LOADED " << filename << " SUCCESSFULLY ]" << std::endl; 
     
 }
 
@@ -43,7 +46,7 @@ dataset<CPU>::dataset(const std::string filename, const std::vector<size_t> outp
 {
     std::ifstream file(filename); 
     if (!file.is_open()) 
-        throw std::runtime_error("Cannot open CSV file: " + filename); 
+        throw std::runtime_error("dataset : Cannot open CSV file: " + filename); 
 
     std::string line;
     while (std::getline(file, line)) 
@@ -67,13 +70,15 @@ dataset<CPU>::dataset(const std::string filename, const std::vector<size_t> outp
         this->input.push_back(matrix<CPU>(input_row.size(), 1, input_row));
         this->expected.push_back(matrix<CPU>(output_row.size(), 1, output_row));
     }
+
+    std::cout << "[LOADED " << filename << " SUCCESSFULLY ]" << std::endl; 
 }
 
 dataset<CPU>::dataset(const std::string filename, const std::vector<size_t> input_cols, const std::vector<size_t> output_cols)
 {
     std::ifstream file(filename); 
     if (!file.is_open()) 
-        throw std::runtime_error("Cannot open CSV file: " + filename); 
+        throw std::runtime_error("dataset : Cannot open CSV file: " + filename); 
 
     std::string line;
     while (std::getline(file, line)) 
@@ -99,13 +104,45 @@ dataset<CPU>::dataset(const std::string filename, const std::vector<size_t> inpu
         this->input.push_back(matrix<CPU>(input_row.size(), 1, input_row));
         this->expected.push_back(matrix<CPU>(output_row.size(), 1, output_row));
     }
+    std::cout << "[LOADED " << filename << " SUCCESSFULLY ]" << std::endl; 
 }
 
 
 void dataset<CPU>::one_hot_encode()
 {
+    if(this->expected[0].columns() != 1 || this->expected[0].rows() != 1)
+        throw std::runtime_error("one_hot_encode : Wrong matrix output shape for one hot encoding. It needs to be 1x1."); 
+    
+
+    
+    std::vector<matrix<CPU>> res;
+    res.reserve(this->expected.size());
+
+    std::vector<float> values;
+    values.reserve(this->expected.size());
+    
+
+    for(matrix<CPU> &mat : this->expected)
+        values.push_back(mat[0]);
+    
+    std::sort(values.begin(), values.end());
+    values.erase(std::unique(values.begin(), values.end()), values.end());
+
+    for(matrix<CPU> &mat : this->expected)
+    {
+        auto it = std::find(values.begin(), values.end(), mat[0]);
+        int index = std::distance(values.begin(), it);
+
+        matrix<CPU> _x = matrix<CPU>(values.size(), 1, 0);
+        _x[index] = 1.0;
+        res.push_back(_x);
+    }
+
+    this->expected = res;
     
 }
+
+
 
 void dataset<CPU>::normalize()
 {
@@ -122,7 +159,7 @@ void dataset<CPU>::normalize()
     }
 
     if(max == min)
-        throw std::runtime_error("max values equal min values, which results in a divison by zero");
+        throw std::runtime_error("normalize : All values of the dataset are the same, which results in a divison by zero.");
 
     for(matrix<CPU>& vec : this->input)
     {
@@ -134,6 +171,39 @@ void dataset<CPU>::normalize()
     
 }
 
+
 void dataset<CPU>::standardize()
 {
+    size_t rows = this->input[0].rows();
+    std::vector<float> means(0);
+    means.reserve(rows);
+
+    std::vector<float> sigma(0);
+    sigma.reserve(rows);
+
+
+    for(matrix<CPU> &vec : this->input)
+        for(size_t r = 0; r < rows; r++ )
+            means[r] += vec[r]; 
+         
+    for(size_t r = 0; r < rows; r++ )
+        means[r]  = means[r] / this->input.size();
+
+
+
+    for(matrix<CPU> &vec : this->input)
+        for(size_t r = 0; r < rows; r++ )
+            sigma[r] += (vec[r] - means[r]) *(vec[r] - means[r]); 
+    
+    for(size_t r = 0; r < rows; r++ )
+        sigma[r]  = std::sqrt(sigma[r] / this->input.size());
+
+
+
+    for(matrix<CPU> &vec : this->input)
+    {
+        for(size_t r = 0; r < rows; r++ )
+            vec[r] = (vec[r] - means[r]) / sigma[r];   
+    }
+
 }

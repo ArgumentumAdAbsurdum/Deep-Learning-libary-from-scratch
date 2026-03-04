@@ -23,6 +23,7 @@ public:
     dataset(const std::string filename, const std::vector<size_t> input_cols, const std::vector<size_t> output_cols);
 
     void one_hot_encode();      // hier prüfen ob dim von matrix<CPU> bei expected immer 1x1 ist.
+
     void normalize ();
     void standardize();
 
@@ -49,10 +50,12 @@ private:
     std::vector<activation_fn> afunc_dx;
 
     std::vector<matrix<CPU>> weight_matrices;
+    std::vector<matrix<CPU>> bias_matrices;
 
-    void mini_batch_gradient_descent(const size_t epochs, dataset<CPU> &ds);
-    void batch_gradient_descent(const size_t epochs, dataset<CPU> &ds);
-    void stochastic_gradient_descent(const size_t epochs, dataset<CPU> &ds, double& lr);
+
+    void mini_batch_gradient_descent(const size_t epochs, dataset<CPU> &ds, double lr, size_t batch_size);
+    void batch_gradient_descent(const size_t epochs, dataset<CPU> &ds, double lr);
+    void stochastic_gradient_descent(const size_t epochs, dataset<CPU> &ds, double lr);
     
     std::vector<matrix<CPU>> layer_outputs(const matrix<CPU>& input);
     matrix<CPU> run(const matrix<CPU>& input);
@@ -62,7 +65,6 @@ private:
 public:
 
     neuralnetwork<CPU>();
-    dataset<CPU> load_csv(const std::string& filename, size_t label_col = 0); // das zu dataset?
 
     void add_layer(const size_t neurons, activation_type  atype);
     void configure_loss_function(loss_type ltype);
@@ -73,7 +75,7 @@ public:
     void initalise_xavier();
     void initalise_he();
 
-    void fit(const size_t epochs,dataset<CPU> &ds, optimizer_type ofunc, double lr = 0.1);
+    void fit(const size_t epochs,dataset<CPU> &ds, optimizer_type ofunc, double lr = 0.1, size_t batch_size = 10000);
     void fit(const size_t epochs,dataset<CPU> &ds, adam_optimizer<CPU> &adam);
 
     void performance(dataset<CPU>& ds, std::string name);

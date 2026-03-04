@@ -78,6 +78,16 @@ size_t matrix<CPU>::size() const
     return this->n;
 }
 
+std::vector<float> &matrix<CPU>::raw()
+{
+    return this->data;
+}
+
+std::vector<float> matrix<CPU>::raw_copy()
+{
+    return this->data;
+}
+
 double matrix<CPU>::L1()
 {
     double res = 0;
@@ -194,6 +204,17 @@ matrix<CPU> matrix<CPU>::operator*(const matrix<CPU> &a) const
     return result;
 }
 
+matrix<CPU> matrix<CPU>::operator+=(const matrix<CPU> &a) 
+{
+    matrix<CPU>::add(*this, a, *this);
+    return *this;
+}
+
+matrix<CPU> matrix<CPU>::operator-=(const matrix<CPU> &a) 
+{
+    matrix<CPU>::sub(*this, a, *this);
+    return *this;
+}
 
 void matrix<CPU>::mat_mul(const matrix &a, const matrix &b, matrix &result)
 {

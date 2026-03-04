@@ -158,7 +158,7 @@ CMakeFiles/deeplearninglibary.dir/src/main.cpp.o: \
  /usr/include/c++/13/bits/basic_ios.tcc \
  /usr/include/c++/13/bits/ostream.tcc /usr/include/c++/13/istream \
  /usr/include/c++/13/bits/istream.tcc \
- /home/lucbr/Documents/DeepLearningLibary/headers/model.h \
+ /home/lucbr/Documents/DeepLearningLibary/headers/DeepModel.h \
  /home/lucbr/Documents/DeepLearningLibary/headers/backend.h \
  /home/lucbr/Documents/DeepLearningLibary/headers/CPU/modelCPU.h \
  /home/lucbr/Documents/DeepLearningLibary/headers/CPU/activationCPU.h \

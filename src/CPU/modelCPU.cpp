@@ -105,17 +105,66 @@ std::vector<matrix<CPU>> neuralnetwork<CPU>::layer_outputs(const matrix<CPU> &in
 }
 
 
-void neuralnetwork<CPU>::mini_batch_gradient_descent(const size_t epochs, dataset<CPU>& ds)
+void neuralnetwork<CPU>::mini_batch_gradient_descent(const size_t epochs, dataset<CPU>& ds, double lr , size_t batch_size)
 {
 
 }
 
-void neuralnetwork<CPU>::batch_gradient_descent(const size_t epochs, dataset<CPU>& ds)
+void neuralnetwork<CPU>::batch_gradient_descent(const size_t epochs, dataset<CPU>& ds,  double lr)
 {
+    
+    std::vector<matrix<CPU>> gradients;
+    gradients.resize(weight_matrices.size());
 
+    for(size_t ep = 0; ep < epochs; ep++)
+    {
+        for(size_t i = 0; i < weight_matrices.size(); i++)
+            gradients[i] = matrix<CPU>(weight_matrices[i].rows(), weight_matrices[i].columns(), 0);
+
+        std::vector<matrix<CPU>> Z;
+        std::vector<matrix<CPU>> Zb;
+        
+        Z.reserve(this->weight_matrices.size() + 1);
+        Zb.reserve(this->weight_matrices.size() + 1);
+
+        for(size_t pos = 0; pos < ds.input.size(); pos++)
+        {
+            matrix<CPU> &input_value = ds.input[pos];
+            matrix<CPU> truth_value = ds.expected[pos];
+
+            Z = layer_outputs(input_value);
+            Zb = Z;
+
+            for(matrix<CPU> &mat : Zb)
+                mat.insert_row(0,1);
+
+
+            ssize_t index = Z.size() - 1;
+            matrix<CPU> delta = lfunc_dx(Z[index], truth_value) % afunc_dx[index-1](weight_matrices[index-1] * Zb[index-1]); 
+
+            gradients[index-1] += delta * Zb[index-1].transpose();
+            
+            
+            index-= 2;
+            for(index; index >= 0; index--)  
+            {    
+                matrix<CPU> weight_transposed = weight_matrices[index+1].transpose();
+                weight_transposed.remove_row(0);
+        
+                delta = (weight_transposed * delta) % afunc_dx[index](weight_matrices[index] * Zb[index]);
+                
+                gradients[index] += delta * Zb[index].transpose();
+            }
+            
+        }
+
+        for(size_t i = 0; i < weight_matrices.size(); i++)
+            weight_matrices[i] -= gradients[i] * (lr / ((float) ds.input.size())); 
+
+    }
 }
 
-void neuralnetwork<CPU>::stochastic_gradient_descent(const size_t epochs, dataset<CPU>& ds, double& lr)
+void neuralnetwork<CPU>::stochastic_gradient_descent(const size_t epochs, dataset<CPU>& ds, double lr)
 {
     std::random_device dev;
     std::mt19937 rng(dev());
@@ -159,92 +208,26 @@ void neuralnetwork<CPU>::stochastic_gradient_descent(const size_t epochs, datase
 
 
 
-// ------------------------- LOAD DATASETS--------------------------------------------
-
-dataset<CPU> neuralnetwork<CPU>::load_csv(const std::string &filename, size_t label_col) 
-{ 
-    if (output_layer_neurons == 0) 
-        throw std::runtime_error( "Input layer not configured. Run configure_input_layer(neurons) first.");
-    if (input_layer_neurons == 0) 
-        throw std::runtime_error( "Output layer not configured. Run configure_output_layer(neurons, activation func) first."); 
-        
-    std::ifstream file(filename); 
-    if (!file.is_open()) 
-        throw std::runtime_error("Cannot open CSV file: " + filename); 
-    
-    
-
-    dataset<CPU> ds;
-
-    std::vector<std::vector<float>> raw_inputs; 
-    std::vector<int> labels; std::string line; 
-    while (std::getline(file, line)) 
-    { 
-        std::stringstream ss(line); 
-        std::string cell; 
-        std::vector<float> input_row; 
-        int current_label = -1; 
-        size_t col = 0; 
-        while (std::getline(ss, cell, ',')) 
-        { 
-            float value = std::stof(cell); 
-            if (col == label_col) 
-                current_label = static_cast<int>(value); 
-            else 
-                input_row.push_back(value); 
-            ++col; 
-        }
-
-        if (current_label < 0 || current_label >= static_cast<int>(output_layer_neurons)) 
-        { 
-            throw std::runtime_error( "Label out of range: " + std::to_string(current_label)); 
-        } 
 
 
-        if (input_row.size() != input_layer_neurons)
-        {
-            std::cerr << "[WARN] Row size " << input_row.size()
-                << " adjusted to " << input_layer_neurons << "\n";
-        }
-
-        if (input_row.size() > input_layer_neurons)
-            input_row.resize(input_layer_neurons);
-
-        else if (input_row.size() < input_layer_neurons)
-            input_row.resize(input_layer_neurons, 0.0f);
-
-        raw_inputs.push_back(std::move(input_row));
-        labels.push_back(current_label); 
-    } 
-    
-    for (size_t i = 0; i < raw_inputs.size(); ++i) 
-    { 
-        auto &row = raw_inputs[i]; 
-
-        matrix<CPU> x_( input_layer_neurons, 1, row ); 
-        
-        ds.input.push_back(x_); 
-        std::vector<float> one_hot(output_layer_neurons, 0.0f); 
-        one_hot[labels[i]] = 1.0f; 
-        
-        matrix<CPU> y_( output_layer_neurons, 1, one_hot ); 
-        ds.expected.push_back(y_); 
-    } 
-
-    std::cout << "[LOADED " << filename << " SUCCESSFULLY ]" << std::endl; 
-    return ds;
-}
 
 
 
 // ------------------------------------------------------------------------------------
 
-void neuralnetwork<CPU>::fit(const size_t epochs, dataset<CPU>& ds, optimizer_type ofunc, double lr )
+void neuralnetwork<CPU>::fit(const size_t epochs, dataset<CPU>& ds, optimizer_type ofunc, double lr, size_t batch_size )
 {
+
     switch(ofunc)
     {
         case optimizer<CPU>::STOCHASTIC_GRADIENT_DESCENT:
             stochastic_gradient_descent(epochs, ds, lr);
+
+        case optimizer<CPU>::BATCH_GRADIENT_DESCENT:
+            batch_gradient_descent(epochs, ds, lr);
+
+        case optimizer<CPU>::MIN_BATCH_GRADIENT_DESCENT:
+            mini_batch_gradient_descent(epochs, ds, lr, batch_size);
     }
 }
 

@@ -2,7 +2,7 @@ CMakeFiles/deeplearninglibary.dir/src/CPU/modelCPU.cpp.o: \
  /home/lucbr/Documents/DeepLearningLibary/src/CPU/modelCPU.cpp \
  /usr/include/stdc-predef.h \
  /home/lucbr/Documents/DeepLearningLibary/headers/CPU/modelCPU.h \
- /home/lucbr/Documents/DeepLearningLibary/headers/model.h \
+ /home/lucbr/Documents/DeepLearningLibary/headers/DeepModel.h \
  /home/lucbr/Documents/DeepLearningLibary/headers/backend.h \
  /home/lucbr/Documents/DeepLearningLibary/headers/CPU/activationCPU.h \
  /home/lucbr/Documents/DeepLearningLibary/headers/activation.h \

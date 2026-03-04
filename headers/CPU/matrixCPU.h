@@ -34,6 +34,8 @@ public:
     matrix<CPU> operator-(const float &a) const;
     matrix<CPU> operator*(const float &a) const;
     matrix<CPU> operator*(const matrix<CPU> &a) const;
+    matrix<CPU> operator+=(const matrix<CPU> &a);
+    matrix<CPU> operator-=(const matrix<CPU> &a);
 
     static void mat_mul(const matrix& a, const matrix &b, matrix& result);
     static void mat_mul_transposed(const matrix& a, const matrix &b, matrix& result);
@@ -45,6 +47,8 @@ public:
     size_t rows() const;
     size_t columns() const;
     size_t size() const;
+    std::vector<float>& raw();
+    std::vector<float> raw_copy();
 
     double L1();
     double L2();
