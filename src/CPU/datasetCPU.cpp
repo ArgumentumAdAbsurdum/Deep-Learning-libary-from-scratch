@@ -8,7 +8,6 @@ dataset<CPU>::dataset()
     
 }
 
-
 dataset<CPU>::dataset(const std::string filename, size_t output_col)
 {
     std::ifstream file(filename); 
@@ -21,97 +20,131 @@ dataset<CPU>::dataset(const std::string filename, size_t output_col)
         std::stringstream ss(line); 
         std::string cell; 
         std::vector<float> input_row;
-
         float current_output = -1; 
         size_t col = 0; 
+        bool skip_row = false;
+
         while (std::getline(ss, cell, ',')) 
         { 
-            float value = std::stof(cell); 
-            if (col == output_col) 
-                current_output = static_cast<float>(value); 
-            else 
-                input_row.push_back(value); 
-            ++col; 
+            try
+            {
+                float value = std::stof(cell);
+                if (std::isnan(value)) {
+                    skip_row = true;
+                    break;
+                }
+
+
+                if (col == output_col) 
+                    current_output = static_cast<float>(value); 
+                else 
+                    input_row.push_back(value); 
+                ++col; 
+            }
+            catch(...)
+            {
+                skip_row = true;
+                break;
+            }
+
         }
 
-        this->input.push_back(matrix<CPU>(input_row.size(), 1, input_row));
-        this->expected.push_back(matrix<CPU>(1,1, current_output)); 
+        if(!input_row.empty() && !skip_row)
+        {
+            this->input.push_back(matrix<CPU>(input_row.size(), 1, input_row));
+            this->expected.push_back(matrix<CPU>(1,1, current_output)); 
+        }
+    }
+
+    std::cout << "[LOADED " << filename << " SUCCESSFULLY ]" << std::endl; 
+}
+
+dataset<CPU>::dataset(const std::string filename, const std::vector<size_t>& ignore, size_t output_col)
+{
+    std::ifstream file(filename); 
+    if (!file.is_open()) 
+        throw std::runtime_error("dataset : Cannot open CSV file: " + filename); 
+
+    std::string line;
+    while (std::getline(file, line)) 
+    { 
+        std::stringstream ss(line); 
+        std::string cell; 
+        std::vector<float> input_row;
+        float current_output = -1; 
+        size_t col = 0; 
+        bool skip_row = false;
+
+        while (std::getline(ss, cell, ',')) 
+        { 
+            try
+            {
+
+                if (std::find(ignore.begin(), ignore.end(), col) != ignore.end()) 
+                {   
+                    ++col;
+                    continue;
+                }
+
+                float value = std::stof(cell); 
+                if (std::isnan(value)) {
+                    skip_row = true;
+                    break;
+                }
+
+                if (col == output_col) 
+                    current_output = static_cast<float>(value); 
+                else 
+                    input_row.push_back(value); 
+                ++col; 
+            }
+            catch(...)
+            {
+                skip_row = true;
+                break;
+            }
+
+        }
+
+        if(!input_row.empty() && !skip_row)
+        {
+            this->input.push_back(matrix<CPU>(input_row.size(), 1, input_row));
+            this->expected.push_back(matrix<CPU>(1,1, current_output)); 
+        }
     }
 
     std::cout << "[LOADED " << filename << " SUCCESSFULLY ]" << std::endl; 
     
 }
 
-dataset<CPU>::dataset(const std::string filename, const std::vector<size_t> output_cols)
+dataset<CPU> dataset<CPU>::split(float ratio)
 {
-    std::ifstream file(filename); 
-    if (!file.is_open()) 
-        throw std::runtime_error("dataset : Cannot open CSV file: " + filename); 
 
-    std::string line;
-    while (std::getline(file, line)) 
-    { 
-        std::stringstream ss(line); 
-        std::string cell; 
-        std::vector<float> input_row;
-        std::vector<float> output_row;
+    if(0 > ratio || ratio > 1)
+        throw std::runtime_error("dataset : split argument needs to be between 0 and 1 ");
+        
+    size_t split_point = this->input.size() * ratio;
 
-        size_t col = 0; 
-        while (std::getline(ss, cell, ',')) 
-        { 
-            float value = std::stof(cell); 
-            if (std::find(output_cols.begin(), output_cols.end(), col) != output_cols.end()) 
-                output_row.push_back(static_cast<float>(value)); 
-            else 
-                input_row.push_back(value); 
-            ++col; 
-        }
+    std::vector<matrix<CPU>> input_first_part(this->input.begin(), this->input.begin() + split_point);
+    std::vector<matrix<CPU>> input_second_part(this->input.begin() + split_point, this->input.end());
 
-        this->input.push_back(matrix<CPU>(input_row.size(), 1, input_row));
-        this->expected.push_back(matrix<CPU>(output_row.size(), 1, output_row));
-    }
+    std::vector<matrix<CPU>> expected_first_part(this->expected.begin(), this->expected.begin() + split_point);
+    std::vector<matrix<CPU>> expected_second_part(this->expected.begin() + split_point, this->expected.end());
 
-    std::cout << "[LOADED " << filename << " SUCCESSFULLY ]" << std::endl; 
+    this->input = input_first_part;
+    this->expected = expected_first_part;
+
+    Dataset ds;
+    ds.input = input_second_part;
+    ds.expected = expected_second_part;
+    return ds;
+
 }
-
-dataset<CPU>::dataset(const std::string filename, const std::vector<size_t> input_cols, const std::vector<size_t> output_cols)
-{
-    std::ifstream file(filename); 
-    if (!file.is_open()) 
-        throw std::runtime_error("dataset : Cannot open CSV file: " + filename); 
-
-    std::string line;
-    while (std::getline(file, line)) 
-    { 
-        std::stringstream ss(line); 
-        std::string cell; 
-        std::vector<float> input_row;
-        std::vector<float> output_row;
-
-        size_t col = 0; 
-        while (std::getline(ss, cell, ',')) 
-        { 
-            float value = std::stof(cell);
-
-            if (std::find(output_cols.begin(), output_cols.end(), col) != output_cols.end()) 
-                output_row.push_back(static_cast<float>(value)); 
-            else if(std::find(input_cols.begin(), input_cols.end(), col) != input_cols.end()) 
-                input_row.push_back(value); 
-
-            ++col; 
-        }
-
-        this->input.push_back(matrix<CPU>(input_row.size(), 1, input_row));
-        this->expected.push_back(matrix<CPU>(output_row.size(), 1, output_row));
-    }
-    std::cout << "[LOADED " << filename << " SUCCESSFULLY ]" << std::endl; 
-}
-
 
 void dataset<CPU>::one_hot_encode()
 {
     if(this->expected[0].columns() != 1 || this->expected[0].rows() != 1)
-        throw std::runtime_error("one_hot_encode : Wrong matrix output shape for one hot encoding. It needs to be 1x1."); 
+        throw std::runtime_error("one_hot_encode : Wrong matrix output shape for one hot encoding. It needs to be 1x1xh."); 
     
 
     
@@ -205,5 +238,19 @@ void dataset<CPU>::standardize()
         for(size_t r = 0; r < rows; r++ )
             vec[r] = (vec[r] - means[r]) / sigma[r];   
     }
+
+}
+
+void dataset<CPU>::print_information()
+{
+
+    if(this->input.empty())
+    {
+        std::cout << "Dataset is empty." << std::endl; 
+    }
+    
+    std::cout << "Samples : " << this->input.size() << std::endl;
+    std::cout << "Input vector dim : " << this->input[0].rows() << std::endl;
+    std::cout << "Output vector dim : " << this->expected[0].rows() << std::endl;
 
 }

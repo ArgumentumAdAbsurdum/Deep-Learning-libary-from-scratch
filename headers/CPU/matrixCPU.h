@@ -8,7 +8,7 @@ template<>
 class matrix<CPU> 
 {
 protected:
-    size_t c, r;
+    size_t c, r, h;
     std::vector<float> data;
     size_t n;
 
@@ -17,10 +17,17 @@ public:
     matrix<CPU>();
     matrix<CPU>(const matrix<CPU>& other);
     matrix<CPU>(matrix<CPU>&& other) noexcept;
+
     matrix<CPU>(const size_t rows, const size_t columns);
     matrix<CPU>(const size_t rows, const size_t columns, const std::vector<float>& values);
     matrix<CPU>(const size_t rows, const size_t columns, float val);
     matrix<CPU>(const size_t rows, const size_t columns, float start, float end);
+
+    static matrix<CPU> create_stacked_matrix(const size_t rows, const size_t columns, const size_t height);
+    static matrix<CPU> create_stacked_matrix(const size_t rows, const size_t columns, const size_t height, const std::vector<float>& values);
+    static matrix<CPU> create_stacked_matrix(const size_t rows, const size_t columns, const size_t height, float val);
+    static matrix<CPU> create_stacked_matrix(const size_t rows, const size_t columns, const size_t height, float start, float end);
+
 
     matrix<CPU>& operator=(const matrix<CPU>& other);
     matrix<CPU>& operator=(matrix<CPU>&& other) noexcept;
@@ -47,10 +54,13 @@ public:
 
     size_t rows() const;
     size_t columns() const;
+    size_t height() const;
     size_t size() const;
+    bool empty() const;
     std::vector<float>& raw();
     std::vector<float> raw_copy();
 
+    double sum();
     double L1();
     double L2();
     size_t argmax();

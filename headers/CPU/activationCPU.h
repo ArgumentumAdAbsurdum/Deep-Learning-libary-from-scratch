@@ -62,20 +62,26 @@ template<>
 class loss<CPU>
 {  
 private:
-    static float cross_entropy(const matrix<CPU> &expected, const matrix<CPU> &result);
-    static float quadratic(const matrix<CPU> &expected, const matrix<CPU> &result);
+    
+    float cross_entropy(const matrix<CPU> &expected, const matrix<CPU> &result);
+    float quadratic(const matrix<CPU> &expected, const matrix<CPU> &result);
 
-    static matrix<CPU> dcross_entropy(const matrix<CPU> &probability, const matrix<CPU> &expected);
-    static matrix<CPU> dcross_entropy_inkl_softmax(const matrix<CPU> &probability, const matrix<CPU> &expected);
-    static matrix<CPU> dquadratic(const matrix<CPU> &probability, const matrix<CPU> &expected);
+    matrix<CPU> dcross_entropy(const matrix<CPU> &probability, const matrix<CPU> &expected);
+    matrix<CPU> dcross_entropy_inkl_softmax(const matrix<CPU> &probability, const matrix<CPU> &expected);
+    matrix<CPU> dquadratic(const matrix<CPU> &probability, const matrix<CPU> &expected);
 
+    
+    
 
-public:    
+public:
+
+    matrix<CPU> weights;
+    loss<CPU>();
     static loss_type CROSS_ENTROPY = 0;
     static loss_type QUADRATIC = 1;
 
-    static loss_fn get_fn(loss_type ltype);
-    static loss_derivative_fn get_derivative_fn(loss_type ltype, activation_type atype);
+    loss_fn get_fn(loss_type ltype);
+    loss_derivative_fn get_derivative_fn(loss_type ltype, activation_type atype);
 };
 
 
@@ -121,3 +127,4 @@ public:
 
 inline hyperparameter<CPU>::hyperparameter() : lr(0.001), lambda(10e-4), batch_size(64)
 {}
+

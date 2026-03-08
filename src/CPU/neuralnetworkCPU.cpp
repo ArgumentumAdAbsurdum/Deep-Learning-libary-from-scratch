@@ -4,8 +4,10 @@
 
 
 
-neuralnetwork<CPU>::neuralnetwork() : input_layer_neurons(0)
-{}
+neuralnetwork<CPU>::neuralnetwork() : input_layer_neurons(0), output_layer_neurons(0)
+{
+    this->loss_function_class = loss<CPU>();
+}
 
 void neuralnetwork<CPU>::add_layer(const size_t neurons, activation_type atype) 
 {
@@ -23,6 +25,16 @@ void neuralnetwork<CPU>::configure_loss_function(loss_type _ltype)
     if(this->imported)
         throw std::runtime_error("You cant modify the structure of imported networks. You can only run, fit, reset weights and check their performance.");
     this->lfunc_type = _ltype;
+}
+
+void neuralnetwork<CPU>::set_loss_weights(const std::vector<float> w)
+{
+    if(output_layer_neurons == 0)
+        throw std::runtime_error("set_loss_weights : Fully configure the Network first bevore setting the loss weights.");
+    if(output_layer_neurons != w.size())
+        throw std::runtime_error("set_loss_weight : Weight size needs to be equal to output layer size");
+    
+    this->loss_function_class.weights = matrix<CPU>(w.size(), 1, w);
 }
 
 void neuralnetwork<CPU>::configure_input_layer(const size_t neurons)
@@ -62,8 +74,11 @@ void neuralnetwork<CPU>::initalise_random_weights(float begin, float end)
 
 
 
-    lfunc = loss<CPU>::get_fn(lfunc_type);
-    lfunc_dx = loss<CPU>::get_derivative_fn(lfunc_type, afunc_type.back());
+    if(this->loss_function_class.weights.empty())
+        this->loss_function_class.weights = matrix<CPU>(this->output_layer_neurons, 1, 1);
+
+    lfunc = loss_function_class.get_fn(lfunc_type);
+    lfunc_dx = loss_function_class.get_derivative_fn(lfunc_type, afunc_type.back());
 
     for(size_t a : afunc_type)
     {
@@ -99,9 +114,11 @@ void neuralnetwork<CPU>::initalise_xavier_weights()
     }
 
 
+    if(this->loss_function_class.weights.empty())
+        this->loss_function_class.weights = matrix<CPU>(this->output_layer_neurons, 1, 1);
 
-    lfunc = loss<CPU>::get_fn(lfunc_type);
-    lfunc_dx = loss<CPU>::get_derivative_fn(lfunc_type, afunc_type.back());
+    lfunc = loss_function_class.get_fn(lfunc_type);
+    lfunc_dx = loss_function_class.get_derivative_fn(lfunc_type, afunc_type.back());
 
     for(size_t a : afunc_type)
     {
@@ -137,8 +154,11 @@ void neuralnetwork<CPU>::initalise_he_weights()
 
 
 
-    lfunc = loss<CPU>::get_fn(lfunc_type);
-    lfunc_dx = loss<CPU>::get_derivative_fn(lfunc_type, afunc_type.back());
+    if(this->loss_function_class.weights.empty())
+        this->loss_function_class.weights = matrix<CPU>(this->output_layer_neurons, 1, 1);
+
+    lfunc = loss_function_class.get_fn(lfunc_type);
+    lfunc_dx = loss_function_class.get_derivative_fn(lfunc_type, afunc_type.back());
 
     for(size_t a : afunc_type)
     {
@@ -166,8 +186,6 @@ matrix<CPU> neuralnetwork<CPU>::run(const matrix<CPU> &input)
     return result;
 }
 
-
-
 std::vector<matrix<CPU>> neuralnetwork<CPU>::layer_outputs(const matrix<CPU> &input)
 {
     std::vector<matrix<CPU>> outputs;
@@ -191,7 +209,7 @@ std::vector<matrix<CPU>> neuralnetwork<CPU>::layer_outputs(const matrix<CPU> &in
 void neuralnetwork<CPU>::gradient_descent(const size_t steps, dataset<CPU>& ds, double lr , double lambda, size_t batch_size)
 {
 
-
+    
     std::vector<matrix<CPU>> wgradients;
     wgradients.resize(weight_matrices.size());
 
@@ -332,6 +350,7 @@ void neuralnetwork<CPU>::fit(const size_t epochs, dataset<CPU> &ds, adam_optimiz
 {
 
     const size_t steps = epochs * (ds.input.size() / adam.batch_size);
+    size_t current_epoch = 0;
 
     std::vector<matrix<CPU>> weight_gradients;
     weight_gradients.resize(weight_matrices.size());
@@ -370,8 +389,18 @@ void neuralnetwork<CPU>::fit(const size_t epochs, dataset<CPU> &ds, adam_optimiz
         bias_variance[i] = matrix<CPU>(bias_matrices[i].rows(), 1, 0);
     }
 
+
+
     for(size_t step = 1; step <= steps; step++)
-    {
+    {   
+        
+
+        if(step % (ds.input.size() / adam.batch_size) == 0 )
+        {
+            current_epoch++;
+            std::cout << "[Epoch : " << current_epoch << " ]" << std::endl;
+        }
+        
 
         for(size_t i = 0; i < weight_matrices.size(); i++)
         {
@@ -457,8 +486,11 @@ void neuralnetwork<CPU>::performance(dataset<CPU> &ds, std::string name)
     {
         matrix<CPU> pred = run(ds.input[i]);
         matrix<CPU> diff = (pred - ds.expected[i]);
-        rmsqe += diff.L2();
+        double l2 = diff.L2();
+        rmsqe += l2 *l2;
         accuracy += (pred.argmax() == ds.expected[i].argmax());
+
+
     }   
 
     rmsqe = std::sqrt(rmsqe / ds.input.size());
@@ -474,6 +506,44 @@ void neuralnetwork<CPU>::performance(dataset<CPU> &ds)
 {
     performance(ds, "");
 }
+
+void neuralnetwork<CPU>::binary_confusion_matrix(dataset<CPU> &ds, const float threshold)
+{
+
+    if(output_layer_neurons != 2)
+        throw std::runtime_error("binary_confusion_matrix : output needs to be binary.");
+
+    int TP = 0, FP = 0, TN = 0, FN = 0;
+
+    for(size_t i = 0; i < ds.input.size(); i++)
+    {
+        matrix<CPU> pred = run(ds.input[i]);
+
+        int pred_class   = pred[1] >= threshold ? 1 : 0;
+        int actual_class = ds.expected[i].argmax();
+
+        if      (actual_class == 1 && pred_class == 1) TP++;
+        else if (actual_class == 0 && pred_class == 1) FP++;
+        else if (actual_class == 0 && pred_class == 0) TN++;
+        else if (actual_class == 1 && pred_class == 0) FN++;
+
+    }   
+
+    double precision = (TP + FP > 0) ? (double)TP / (TP + FP) : 0.0;
+    double recall    = (TP + FN > 0) ? (double)TP / (TP + FN) : 0.0;
+    double f1        = (precision + recall > 0) ? 
+                    2 * precision * recall / (precision + recall) : 0.0;
+
+    std::cout << "[ => Confusion Matrix:]"  << std::endl;
+    std::cout << "[    TP=" << TP << " FP=" << FP << " ]" << std::endl;
+    std::cout << "[    FN=" << FN << " TN=" << TN << " ]" << std::endl;
+    std::cout << "[ => Precision : " << precision << " ]" << std::endl;;
+    std::cout << "[ => Recall    : " << recall    << " ]" << std::endl;;
+    std::cout << "[ => F1        : " << f1        << " ]" << std::endl;
+
+}
+
+
 
 void neuralnetwork<CPU>::load_weights(const std::string &filename)
 {
@@ -547,8 +617,11 @@ void neuralnetwork<CPU>::load_weights(const std::string &filename)
     }
 
 
-    this->lfunc = loss<CPU>::get_fn(this->lfunc_type);
-    this->lfunc_dx = loss<CPU>::get_derivative_fn(this->lfunc_type, afunc_type.back());
+    if(this->loss_function_class.weights.empty())
+        this->loss_function_class.weights = matrix<CPU>(this->output_layer_neurons, 1, 1);
+
+    this->lfunc = loss_function_class.get_fn(this->lfunc_type);
+    this->lfunc_dx = loss_function_class.get_derivative_fn(this->lfunc_type, afunc_type.back());
 
     for(size_t a : afunc_type)
     {

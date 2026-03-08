@@ -19,13 +19,17 @@ public:
     
     dataset();
     dataset(const std::string filename, size_t label_col = 0);
-    dataset(const std::string filename, const std::vector<size_t> output_cols);
-    dataset(const std::string filename, const std::vector<size_t> input_cols, const std::vector<size_t> output_cols);
+    dataset(const std::string filename, const std::vector<size_t>& ignore, size_t label_col = 0);
 
-    void one_hot_encode();      // hier prüfen ob dim von matrix<CPU> bei expected immer 1x1 ist.
+    dataset<CPU> split(float ratio);
 
+
+    void one_hot_encode();   
     void normalize ();
     void standardize();
+
+
+    void print_information();
 
 };
 
@@ -36,7 +40,7 @@ class neuralnetwork<CPU>
 private:
 
     bool imported = false;
-
+    loss<CPU> loss_function_class;
 
     size_t lfunc_type;
     std::vector<size_t> afunc_type;
@@ -69,6 +73,7 @@ public:
 
     void add_layer(const size_t neurons, activation_type  atype);
     void configure_loss_function(loss_type ltype);
+    void set_loss_weights(const std::vector<float> w);
     void configure_input_layer(const size_t neurons);
 
 
@@ -84,7 +89,8 @@ public:
 
     void performance(dataset<CPU>& ds, std::string name);
     void performance(dataset<CPU>& ds);
-
+    
+    void binary_confusion_matrix(dataset<CPU>& ds, const float threshold = 0.5);
 
     void load_weights(const std::string &filename);
     void save_weights(const std::string &filename);

@@ -2,6 +2,9 @@
 #include <cmath>
 
 
+
+
+
 matrix<CPU> activation<CPU>::ones(const matrix<CPU> &a)
 {
     matrix<CPU> result = a;
@@ -31,7 +34,7 @@ matrix<CPU> activation<CPU>::elu(const matrix<CPU> &a)
     matrix<CPU> result(a.rows(), a.columns());
     
     for(int i = 0; i < a.size(); i++)
-        result[i] = a[i] > 0 ? a[i] : ELU_ALPHA_PARAM * (1 - std::exp(a[i]));
+        result[i] = a[i] > 0 ? a[i] : ELU_ALPHA_PARAM * (std::exp(a[i]) - 1);
 
     return result;
 }
@@ -254,6 +257,10 @@ activation_fn activation<CPU>::get_derivative_fn(activation_type atype)
     }
 }
 
+
+
+
+
 float loss<CPU>::cross_entropy(const matrix<CPU> &probability, const matrix<CPU> &expected)
 {
     float sum = 0;
@@ -264,7 +271,7 @@ float loss<CPU>::cross_entropy(const matrix<CPU> &probability, const matrix<CPU>
         if(expected[i] > 0)
         {
             float p = std::max(probability[i], epsilon);
-            sum -= expected[i] * std::log(p);
+            sum -= this->weights[i] * expected[i] * std::log(p);
         }
     }
     return sum;
@@ -273,11 +280,15 @@ float loss<CPU>::cross_entropy(const matrix<CPU> &probability, const matrix<CPU>
 float loss<CPU>::quadratic(const matrix<CPU> &probability, const matrix<CPU> &expected)
 {
     float sum = 0;
-
+    /*
     for(int i = 0; i < expected.size(); i++)
         sum += (probability[i] - expected[i]) * (probability[i] - expected[i]);
 
-    return sum * 1/ expected.size();
+    */
+
+    matrix<CPU> err_sq = matrix<CPU>::square(probability - expected);
+
+    return  (err_sq % this->weights).sum() / expected.size();
 }
 
 
@@ -289,29 +300,42 @@ matrix<CPU> loss<CPU>::dcross_entropy(const matrix<CPU> &probability, const matr
     for (size_t i = 0; i < probability.size(); ++i)
     {
         if (expected[i] != 0.0f)
-            grad[i] = -1 / probability[i];
+            grad[i] = -this->weights[i] / probability[i];
     }
 
     return grad;
-    
 }
 
 matrix<CPU> loss<CPU>::dcross_entropy_inkl_softmax(const matrix<CPU> &probability, const matrix<CPU> &expected)
 {
+    /*
     matrix<CPU> grad(probability.rows(), probability.columns(), 0);
-
     for (int i = 0; i < expected.size(); i++)
         grad[i] = probability[i] - expected[i];
+    */
+    
+    
+    matrix<CPU> grad = (probability - expected) % this->weights;
     return grad;
 }
 
 matrix<CPU> loss<CPU>::dquadratic(const matrix<CPU> &probability, const matrix<CPU> &expected)
 {
+    /*
     matrix<CPU> grad(probability.rows(), probability.columns(), 0);
 
     for (int i = 0; i < expected.size(); i++)
         grad[i] = 2 * (probability[i] - expected[i]);
+    */
+    matrix<CPU> grad = 2 * ((probability - expected) % this->weights); 
     return grad;
+}
+
+
+
+
+loss<CPU>::loss()
+{
 }
 
 loss_fn loss<CPU>::get_fn(loss_type ltype)
@@ -319,10 +343,14 @@ loss_fn loss<CPU>::get_fn(loss_type ltype)
     switch (ltype)
     {
         case loss<CPU>::CROSS_ENTROPY:
-            return loss<CPU>::cross_entropy;
+            return [this](const matrix<CPU>& p, const matrix<CPU>& e) {
+                return this->cross_entropy(p, e);
+            };
 
         case loss<CPU>::QUADRATIC:
-            return loss<CPU>::quadratic;
+            return [this](const matrix<CPU>& p, const matrix<CPU>& e) {
+                return this->quadratic(p, e);
+            };
 
         default:
             throw std::invalid_argument("Unknown loss type");
@@ -336,13 +364,20 @@ loss_derivative_fn loss<CPU>::get_derivative_fn(loss_type ltype, activation_type
         case loss<CPU>::CROSS_ENTROPY:
         {
             if (atype == activation<CPU>::SOFTMAX)
-                return loss<CPU>::dcross_entropy_inkl_softmax;
+                return [this](const matrix<CPU>& p, const matrix<CPU>& e) {
+                    return this->dcross_entropy_inkl_softmax(p, e);
+                };
+
             else
-                return loss<CPU>::dcross_entropy;
+                return [this](const matrix<CPU>& p, const matrix<CPU>& e) {
+                    return this->dcross_entropy(p, e);
+                };
         }
 
         case loss<CPU>::QUADRATIC:
-            return loss<CPU>::dquadratic;
+                return [this](const matrix<CPU>& p, const matrix<CPU>& e) {
+                    return this->dquadratic(p, e);
+                };
 
         default:
             throw std::invalid_argument("Unknown loss type");
