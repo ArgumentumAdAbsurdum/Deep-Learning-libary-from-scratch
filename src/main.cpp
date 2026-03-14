@@ -14,11 +14,6 @@ int main()
 {
     // cmake .. -DENABLE_CUDA=ON 
     
-    
-
-
-    
-    
     NeuralNetwork c;
 
     c.configure_input_layer(784);
@@ -43,11 +38,11 @@ int main()
     ADAM_Optimizer adam;
     adam.lr = 0.001;
     adam.batch_size = 256;
+    c.fit(100, train, adam);
 
-    c.fit(50, train, adam);
 
-    c.performance(train);
-    c.performance(test);
+    c.performance(train, "train");
+    c.performance(test, "test");
 
     c.save_weights("test1.txt");
     
@@ -72,13 +67,5 @@ int main()
     */
 
 
-    
-
-    /*
-    Matrix a = Matrix::create_stacked_matrix(10,1, 1, 2);
-    Matrix b = Matrix::create_stacked_matrix(10,1, 1, 1);
-    a.print();
-    (activation<CUDA>::softmax(a)).print();
-    */
 
 }

@@ -576,6 +576,7 @@ void neuralnetwork<CUDA>::fit(const size_t epochs, dataset<CUDA> &ds, adam_optim
 
     }
 
+    std::cout << std::endl;
     std::cout << "=================================================" << std::endl;
 
 }

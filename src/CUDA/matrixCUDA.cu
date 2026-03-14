@@ -134,7 +134,7 @@ matrix<CUDA> matrix<CUDA>::slice_stacked_matrix(size_t start, size_t end)
     if(this->h < end)
         throw std::runtime_error("slice_stacked_matrix : matrix height to small.");
 
-    return matrix<CUDA>(this->data + start * mat_size(), r,c, end - start);
+    return matrix<CUDA>(this->data + start * mat_elements(), r,c, end - start);
 }
 
 // ------------------------------------------
@@ -144,7 +144,7 @@ matrix<CUDA> matrix<CUDA>::reduce_sum(const matrix<CUDA> &a)
     size_t threads = std::min((size_t)THREADS_1D, a.height());
 
     matrix<CUDA> result = create_stacked_matrix(a.rows(), a.columns(), 1);
-    size_t mat_size = a.mat_size();
+    size_t mat_size = a.mat_elements();
     size_t shared = THREADS_1D * sizeof(float);
 
 
@@ -156,9 +156,9 @@ matrix<CUDA> matrix<CUDA>::reduce_sum(const matrix<CUDA> &a)
 matrix<CUDA> matrix<CUDA>::bcast_add_to_stacked_matrix(const matrix<CUDA> &a, const matrix<CUDA> &b)
 {   
 
-    size_t mat_size = a.mat_size();
+    size_t mat_size = a.mat_elements();
 
-    if(mat_size != b.mat_size() || b.height() != 1)
+    if(mat_size != b.mat_elements() || b.height() != 1)
         throw std::runtime_error("bcast_add_to_stacked_matrix : matrix dimensions must be equal and the height of the second matrix needs to be 1.");    
     
     dim3 threads(256);
@@ -168,13 +168,13 @@ matrix<CUDA> matrix<CUDA>::bcast_add_to_stacked_matrix(const matrix<CUDA> &a, co
     );
 
     matrix<CUDA> result = a;
-    matrix_kernel_bcast_add_to_stacked_matrix<<<blocks, threads>>>(a.data, b.data, result.data, mat_size, a.size());
+    matrix_kernel_bcast_add_to_stacked_matrix<<<blocks, threads>>>(a.data, b.data, result.data, mat_size, a.elements());
     return result;
 }
 
 matrix<CUDA> matrix<CUDA>::bcast_hadamard_to_stacked_matrix(const matrix<CUDA> &a, const matrix<CUDA> &b)
 {
-    size_t mat_size = a.mat_size();
+    size_t mat_size = a.mat_elements();
     if(b.height() != 1 )
         throw std::runtime_error("bcast_hadamard_to_stacked_matrix : height needs to be equal to 1");    
     
@@ -185,7 +185,7 @@ matrix<CUDA> matrix<CUDA>::bcast_hadamard_to_stacked_matrix(const matrix<CUDA> &
     );
 
     matrix<CUDA> result = a;
-    matrix_kernel_bcast_hadamard_to_stacked_matrix<<<blocks, threads>>>(a.data, b.data, result.data, mat_size, a.size());
+    matrix_kernel_bcast_hadamard_to_stacked_matrix<<<blocks, threads>>>(a.data, b.data, result.data, mat_size, a.elements());
     return result;
 }
 
@@ -231,7 +231,7 @@ matrix<CUDA> matrix<CUDA>::bcast_mat_mul_to_stacked_matrix(const matrix<CUDA> &a
 
 matrix<CUDA> matrix<CUDA>::bcast_scale_to_stacked_matrix(const matrix<CUDA> &a, const matrix<CUDA> &b)
 {
-    size_t mat_size = a.mat_size();
+    size_t mat_size = a.mat_elements();
     if(b.rows() != 1 || b.columns() != 1 )
         throw std::runtime_error("bcast_scale_to_stacked_matrix : Height of matrices need to match and second matrix has to be of shape 1x1xh");    
     
@@ -242,7 +242,7 @@ matrix<CUDA> matrix<CUDA>::bcast_scale_to_stacked_matrix(const matrix<CUDA> &a, 
     );
 
     matrix<CUDA> result = a;
-    matrix_kernel_bcast_scale_to_stacked_matrix<<<blocks, threads>>>(a.data, b.data, result.data, mat_size, a.size());
+    matrix_kernel_bcast_scale_to_stacked_matrix<<<blocks, threads>>>(a.data, b.data, result.data, mat_size, a.elements());
     return result;
 }
 
@@ -262,12 +262,12 @@ size_t  matrix<CUDA>::height() const
     return h;
 }
 
-size_t  matrix<CUDA>::size() const
+size_t  matrix<CUDA>::elements() const
 {
     return n;
 }
 
-size_t matrix<CUDA>::mat_size() const
+size_t matrix<CUDA>::mat_elements() const
 {
     return this->r * this->c;
 }
@@ -294,7 +294,7 @@ std::vector<float> matrix<CUDA>::values()
     return result;
 }
 
-matrix<CUDA> matrix<CUDA>::sum_device() const
+matrix<CUDA> matrix<CUDA>::sum() const
 {
     size_t mat_size = this->r * this->c;
     size_t amount_blocks = (mat_size + THREADS_1D - 1 ) / THREADS_1D;
@@ -320,7 +320,7 @@ matrix<CUDA> matrix<CUDA>::sum_device() const
     return result;
 }
 
-matrix<CUDA> matrix<CUDA>::L2_device() const
+matrix<CUDA> matrix<CUDA>::L2() const
 {
     matrix<CUDA> squared = matrix<CUDA>::square(*this);
     
@@ -348,7 +348,7 @@ matrix<CUDA> matrix<CUDA>::L2_device() const
     return result;
 }
 
-matrix<CUDA> matrix<CUDA>::max_device() const
+matrix<CUDA> matrix<CUDA>::max() const
 {
     size_t mat_size = this->r * this->c;
     size_t amount_blocks = (mat_size + THREADS_1D - 1 ) / THREADS_1D;
@@ -374,7 +374,7 @@ matrix<CUDA> matrix<CUDA>::max_device() const
     return result;
 }
 
-matrix<CUDA> matrix<CUDA>::min_device() const
+matrix<CUDA> matrix<CUDA>::min() const
 {
     size_t mat_size = this->r * this->c;
     size_t amount_blocks = (mat_size + THREADS_1D - 1 ) / THREADS_1D;
@@ -403,22 +403,6 @@ matrix<CUDA> matrix<CUDA>::min_device() const
 
 
 
-
-std::vector<float> matrix<CUDA>::sum() const
-{
-    matrix<CUDA> sum = sum_device();
-    std::vector<float> result(this->h);
-    cudaMemcpy(result.data(), sum.data, this->h * sizeof(float), cudaMemcpyDeviceToHost);
-    return result;
-} 
-
-std::vector<float> matrix<CUDA>::L2() const
-{
-    matrix<CUDA> l2 = L2_device();
-    std::vector<float> result(this->h);
-    cudaMemcpy(result.data(), l2.data, this->h * sizeof(float), cudaMemcpyDeviceToHost);
-    return result;
-}
 
 std::vector<size_t>  matrix<CUDA>::argmax() const
 {
@@ -475,22 +459,6 @@ std::vector<size_t>   matrix<CUDA>::argmin() const
     return result;
 }
 
-std::vector<float> matrix<CUDA>::max() const
-{
-    matrix<CUDA> m = max_device();
-    std::vector<float> result(this->h);
-    cudaMemcpy(result.data(), m.data, this->h * sizeof(float), cudaMemcpyDeviceToHost);
-    return result;
-}
-
-
-std::vector<float> matrix<CUDA>::min() const
-{
-    matrix<CUDA> m = min_device();
-    std::vector<float> result(this->h);
-    cudaMemcpy(result.data(), m.data, this->h * sizeof(float), cudaMemcpyDeviceToHost);
-    return result;
-}
 
 void  matrix<CUDA>::print() const 
 {
@@ -502,7 +470,7 @@ void  matrix<CUDA>::print() const
     for(int l = 0; l < this->h; l++)
     {
         std::cout << "----------- Matrix : " << l << " -----------" << std::endl;
-        size_t offset = l * mat_size();
+        size_t offset = l * mat_elements();
         for(size_t row = 0; row < this->r; row++)
         {
             for(size_t col = 0; col< this->c; col++)
@@ -515,7 +483,7 @@ void  matrix<CUDA>::print() const
 
 }
 
-void  matrix<CUDA>::print_size() const
+void  matrix<CUDA>::print_shape() const
 {
     std::cout << r << " " << c << " " << h << std::endl;
 }
@@ -772,9 +740,9 @@ matrix<CUDA> matrix<CUDA>::operator-=(const matrix<CUDA> &a)
 matrix<CUDA> matrix<CUDA>::transpose(const matrix<CUDA> &a)
 {
     matrix<CUDA> result = create_stacked_matrix(a.columns(), a.rows(), a.height());
-    dim3 blocks((a.mat_size() + 255) / 256, a.height());
+    dim3 blocks((a.mat_elements() + 255) / 256, a.height());
 
-    matrix_kernel_transpose<<<blocks, 256>>>(a.data, result.data, result.rows(), result.columns(), result.size());
+    matrix_kernel_transpose<<<blocks, 256>>>(a.data, result.data, result.rows(), result.columns(), result.elements());
     return result;
 }
 

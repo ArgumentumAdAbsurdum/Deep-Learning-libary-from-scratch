@@ -144,8 +144,18 @@ dataset<CUDA>::dataset(const std::string filename, const std::vector<size_t>& ig
 
 dataset<CUDA> dataset<CUDA>::split(float ratio)
 {
+    size_t pivot = ratio * this->input.height();
+    
+    dataset<CUDA> first;
+    first.input = this->input.slice_stacked_matrix(0, pivot);
+    first.expected = this->expected.slice_stacked_matrix(0, pivot);
 
+    dataset<CUDA> second;
+    second.input = this->input.slice_stacked_matrix(pivot, this->input.height());
+    second.expected = this->expected.slice_stacked_matrix(pivot, this->input.height());
 
+    *this = first;
+    return second;
 }
 
 void dataset<CUDA>::one_hot_encode()
@@ -188,8 +198,8 @@ void dataset<CUDA>::normalize()
     float max = std::numeric_limits<float>::min();
     float min = std::numeric_limits<float>::max();
 
-    std::vector<float> layer_max = this->input.max();
-    std::vector<float> layer_min = this->input.min();
+    std::vector<float> layer_max = this->input.max().values();
+    std::vector<float> layer_min = this->input.min().values();
 
     for(int i = 0; i < this->input.height(); i++)
     {
@@ -207,28 +217,13 @@ void dataset<CUDA>::normalize()
 
 void dataset<CUDA>::standardize()
 {
-    /*
-    size_t rows = this->input[0].rows();
-    size_t n = this->input.size();
 
-    matrix<CUDA> mean(rows, 1);
-    for(matrix<CUDA> &vec : this->input)
-        mean = mean + vec;
-    mean = mean * (1 / (float) n);
-
-    matrix<CUDA> variance(rows, 1);
-    for(matrix<CUDA> &vec : this->input)
-    {
-        matrix<CUDA> diff = vec - mean;
-        variance = variance + matrix<CUDA>::square(diff);
-    }
-
-    variance = variance * (1 / (float) n);
+    const float n = (float) input.height();
+    matrix<CUDA> mean = matrix<CUDA>::reduce_sum(input) * (1 / n);
+    matrix<CUDA> variance = matrix<CUDA>::reduce_sum(matrix<CUDA>::square(input)) * (1 / n);
     matrix<CUDA> sigma = matrix<CUDA>::sqrt(variance);
 
-    for(matrix<CUDA>& vec : this->input)
-        vec = (vec - mean) % matrix<CUDA>::reciprocal(sigma);
-    */
+    this->input = (this->input - mean) % matrix<CUDA>::reciprocal(sigma);
 }
 
 void dataset<CUDA>::print_information()

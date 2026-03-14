@@ -68,31 +68,25 @@ public:
     size_t rows() const;
     size_t columns() const;
     size_t height() const;
-    size_t size() const;
-    size_t mat_size() const;
+    size_t elements() const;
+    size_t mat_elements() const;
 
     bool empty() const;
     float* raw();
     float* raw() const;
     std::vector<float> values();
 
-    matrix<CUDA> min_device() const;
-    matrix<CUDA> max_device() const;
-    matrix<CUDA> sum_device() const; 
-    matrix<CUDA> L2_device() const;
+    matrix<CUDA> min() const;
+    matrix<CUDA> max() const;
+    matrix<CUDA> sum() const; 
+    matrix<CUDA> L2() const;
     
-    std::vector<float> sum() const; 
-    std::vector<float> L2() const;
     std::vector<size_t> argmax() const;
     std::vector<size_t> argmin() const;
-    std::vector<float> max() const;
-    std::vector<float> min() const;
-
-
 
 
     void print() const;
-    void print_size() const;
+    void print_shape() const;
     void set(float val);
 
     static matrix<CUDA> sqrt(const matrix<CUDA> &a);
@@ -114,7 +108,6 @@ template<>
 class memory_pool<CUDA>
 {
 private:
-
     std::unordered_map<size_t, std::vector<float*>> free_blocks;
 
 public:
