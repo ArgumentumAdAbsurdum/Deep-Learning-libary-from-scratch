@@ -432,7 +432,6 @@ __global__ void activation_function_kernel_sigmoid(const float* A, float* result
         result[i] = 1 / (1 + std::exp(-A[i]));
 }
 
-
 __global__ void activation_function_kernel_log_sigmoid(const float* A, float* result, const size_t n)
 {
     size_t i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -441,7 +440,6 @@ __global__ void activation_function_kernel_log_sigmoid(const float* A, float* re
     for(; i < n; i += stride)
         result[i] = std::log(1 / (1 + std::exp(-A[i])));
 }
-
 
 __global__ void activation_function_kernel_hard_sigmoid(const float* A, float* result, const size_t n)
 {
@@ -461,7 +459,6 @@ __global__ void activation_function_kernel_hard_sigmoid(const float* A, float* r
     }
 }
 
-
 __global__ void activation_function_kernel_tanh(const float* A, float* result, const size_t n)
 {
     size_t i = threadIdx.x + blockIdx.x * blockDim.x;
@@ -471,7 +468,6 @@ __global__ void activation_function_kernel_tanh(const float* A, float* result, c
         result[i] = std::tanh(A[i]);
 
 }
-
 
 __global__ void activation_function_kernel_drelu(const float* A, float* result, const size_t n)
 {
@@ -490,7 +486,6 @@ __global__ void activation_function_kernel_delu(const float* A, float* result, c
     for(; i < n; i += stride)
         result[i] = A[i] > 0 ? 1 : alpha * std::exp(A[i]) ;
 }
-
 
 __global__ void activation_function_kernel_dhard_sigmoid(const float* A, float* result, const size_t n)
 {
@@ -516,5 +511,11 @@ __global__ void activation_function_kernel_dtanh(const float* A, float* result, 
     for(; i < n; i += stride)
         result[i] = 1 / (std::cosh(A[i]) * std::cosh(A[i]));
 }
+
+
+template<int afunc_type, int lfunc_type>
+__global__ void backpropagation_delta0_kernel(float* Z, float* weights, float* bias, float* loss, float* result, size_t result_rows, size_t result_cols, size_t inner);
+
+                                                
 
 

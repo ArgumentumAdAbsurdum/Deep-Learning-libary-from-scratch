@@ -1,5 +1,3 @@
-
-//#define ENABLE_CUDA  1
 #include <iostream>
 #include "DeepModel.h"
 #include <chrono>

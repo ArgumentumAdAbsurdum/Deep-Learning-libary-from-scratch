@@ -8,6 +8,11 @@ NeuralNetwork::NeuralNetwork() : input_layer_neurons(0), output_layer_neurons(0)
     this->loss_function_class = Loss();
 }
 
+void NeuralNetwork::disable_print()
+{
+    print = false;
+}
+
 void NeuralNetwork::add_layer(const size_t neurons, activation_type atype) 
 {
 
@@ -53,7 +58,10 @@ void NeuralNetwork::configure_input_layer(const size_t neurons)
 
 void NeuralNetwork::initalise_random_weights(float begin, float end)
 {
-    std::cout << "[INITALISE]" << std::endl;
+
+    if(print)
+        std::cout << "[INITALISE]" << std::endl;
+
     if(neurons_per_layer.size() <= 1)
         throw std::runtime_error("Initalise() : run add_layer first to build the NN. ");
 
@@ -62,7 +70,8 @@ void NeuralNetwork::initalise_random_weights(float begin, float end)
         size_t rows = neurons_per_layer[i+1];        
         size_t cols = neurons_per_layer[i];      
 
-        std::cout << "[LAYER = " << i << " WEIGHT Matrix: => ROWS = " << rows << " , COLUMNS = " << cols << ", BIAS = " <<  rows << "] " << std::endl;
+        if(print)
+            std::cout << "[LAYER = " << i << " WEIGHT Matrix: => ROWS = " << rows << " , COLUMNS = " << cols << ", BIAS = " <<  rows << "] " << std::endl;
 
         Matrix mat(rows, cols, begin, end);    
         weight_matrices.push_back(mat);
@@ -93,7 +102,9 @@ void NeuralNetwork::initalise_random_weights(float begin, float end)
 
 void NeuralNetwork::initalise_xavier_weights()
 {
-    std::cout << "[INITALISE]" << std::endl;
+    if(print)
+        std::cout << "[INITALISE]" << std::endl;
+
     if(neurons_per_layer.size() <= 1)
         throw std::runtime_error("Initalise() : run add_layer first to build the NN. ");
 
@@ -102,9 +113,10 @@ void NeuralNetwork::initalise_xavier_weights()
         size_t rows = neurons_per_layer[i+1];        
         size_t cols = neurons_per_layer[i];      
 
-        std::cout << "[LAYER = " << i << " WEIGHT Matrix: => ROWS = " << rows << " , COLUMNS = " << cols << ", BIAS = " <<  rows << "] " << std::endl;
+        if(print)
+            std::cout << "[LAYER = " << i << " WEIGHT Matrix: => ROWS = " << rows << " , COLUMNS = " << cols << ", BIAS = " <<  rows << "] " << std::endl;
 
-        const float range = std::sqrt(6 / (neurons_per_layer[i] + neurons_per_layer[i+1]));
+        const float range = std::sqrt(6.0f / (neurons_per_layer[i] + neurons_per_layer[i+1]));
         Matrix mat(rows, cols, -range, range);    
         weight_matrices.push_back(mat);
 
@@ -132,7 +144,8 @@ void NeuralNetwork::initalise_xavier_weights()
 
 void NeuralNetwork::initalise_he_weights()
 {
-    std::cout << "[INITALISE]" << std::endl;
+    if(print)
+        std::cout << "[INITALISE]" << std::endl;
     if(neurons_per_layer.size() <= 1)
         throw std::runtime_error("Initalise() : run add_layer first to build the NN. ");
 
@@ -140,10 +153,11 @@ void NeuralNetwork::initalise_he_weights()
     {
         size_t rows = neurons_per_layer[i+1];        
         size_t cols = neurons_per_layer[i];      
+        
+        if(print)
+            std::cout << "[LAYER = " << i << " WEIGHT Matrix: => ROWS = " << rows << " , COLUMNS = " << cols << ", BIAS = " <<  rows << "] " << std::endl;
 
-        std::cout << "[LAYER = " << i << " WEIGHT Matrix: => ROWS = " << rows << " , COLUMNS = " << cols << ", BIAS = " <<  rows << "] " << std::endl;
-
-        const float range = std::sqrt(6 / (neurons_per_layer[i]));
+        const float range = std::sqrt(6.0f / (neurons_per_layer[i]));
         Matrix mat(rows, cols, -range, range);    
         weight_matrices.push_back(mat);
 
@@ -205,8 +219,8 @@ std::vector<Matrix> NeuralNetwork::layer_outputs(const Matrix &input)
 void NeuralNetwork::gradient_descent(const size_t steps, Dataset& ds, double lr , double lambda, size_t batch_size)
 {
 
-
-    std::cout << "==================[TRAINING]=====================" << std::endl;
+    if(print)
+        std::cout << "==================[TRAINING]=====================" << std::endl;
 
     size_t current_epoch = 0;
     std::vector<Matrix> wgradients;
@@ -227,8 +241,8 @@ void NeuralNetwork::gradient_descent(const size_t steps, Dataset& ds, double lr 
 
     for(size_t step = 1; step <= steps; step++)
     {
-
-        print_status(step, steps, batch_size, ds.input.height(), current_epoch);
+        if(print)
+            print_status(step, steps, batch_size, ds.input.height(), current_epoch);
 
         for(size_t i = 0; i < weight_matrices.size(); i++)
         {
@@ -286,9 +300,12 @@ void NeuralNetwork::gradient_descent(const size_t steps, Dataset& ds, double lr 
     }
 
 
-    std::cout << std::endl;
+    if(print)
+    {
+        std::cout << std::endl;
+        std::cout << "=================================================" << std::endl;
+    }
 
-    std::cout << "=================================================" << std::endl;
 }
 
 
@@ -301,7 +318,9 @@ void NeuralNetwork::gradient_descent(const size_t steps, Dataset& ds, double lr 
 void NeuralNetwork::fit(const size_t epochs, Dataset &ds, ADAM_Optimizer &adam)
 {
 
-    std::cout << "==================[TRAINING]=====================" << std::endl;
+    if(print)
+        std::cout << "==================[TRAINING]=====================" << std::endl;
+
     size_t steps = epochs * (ds.input.height() / adam.batch_size);
     size_t current_epoch = 0;
 
@@ -346,7 +365,8 @@ void NeuralNetwork::fit(const size_t epochs, Dataset &ds, ADAM_Optimizer &adam)
     for(size_t step = 1; step <= steps; step++)
     {   
         
-        print_status(step, steps, adam.batch_size, ds.input.height(), current_epoch);
+        if(print)
+            print_status(step, steps, adam.batch_size, ds.input.height(), current_epoch);
         
         for(size_t i = 0; i < weight_matrices.size(); i++)
         {
@@ -369,13 +389,11 @@ void NeuralNetwork::fit(const size_t epochs, Dataset &ds, ADAM_Optimizer &adam)
         Z = layer_outputs(input);
         
         ssize_t index = Z.size() - 1;
-        
-
+    
         Matrix delta = lfunc_dx(Z[index], truth) % afunc_dx[index-1](weight_matrices[index-1] * Z[index-1] + bias_matrices[index-1]);
 
         weight_gradients[index-1] = delta * Matrix::transpose(Z[index-1]);
         bias_gradients[index-1] = delta;
-
 
         index-= 2;
         for(; index >= 0; index--)                  
@@ -432,8 +450,12 @@ void NeuralNetwork::fit(const size_t epochs, Dataset &ds, ADAM_Optimizer &adam)
 
     }
 
-    std::cout << std::endl;
-    std::cout << "=================================================" << std::endl;
+    if(print)
+    {
+        std::cout << std::endl;
+        std::cout << "=================================================" << std::endl;
+    }
+
 
 }
 
@@ -451,29 +473,6 @@ void NeuralNetwork::print_status(const size_t step, const size_t steps, const si
     }
 }
 
-
-
-void NeuralNetwork::performance(Dataset &ds, std::string name)
-{
-    
-    float accuracy = 0; 
-
-    std::vector<size_t> p = run(ds.input).argmax();
-    std::vector<size_t> e = ds.expected.argmax();
-
-    for(int i = 0; i < ds.input.height(); i++)
-    {
-
-        accuracy += (p[i] == e[i]);
-    }
-    
-
-    accuracy /= ds.input.height();
-
-    std::cout << "[PERFORMANCE RESULTS FOR Dataset : " << name << "]" << std::endl;
-    std::cout << "[ => Accuracy : " << accuracy << "]" <<  std::endl;
-
-}
 
 
 void NeuralNetwork::fit(const size_t epochs, Dataset& ds, optimizer_type ofunc, double lr, size_t batch_size )
@@ -524,10 +523,38 @@ void NeuralNetwork::fit(const size_t epochs, Dataset &ds, optimizer_type ofunc, 
     }
 }
 
+
+
+float NeuralNetwork::accuracy(Dataset &ds)
+{
+    float res = 0; 
+
+    std::vector<size_t> p = run(ds.input).argmax();
+    std::vector<size_t> e = ds.expected.argmax();
+
+    for(int i = 0; i < ds.input.height(); i++)
+    {
+
+        res += (p[i] == e[i]);
+    }
+
+    res /= ds.input.height();
+    return res;
+}
+
+void NeuralNetwork::performance(Dataset &ds, std::string name)
+{
+    
+    std::cout << "[PERFORMANCE RESULTS FOR Dataset : " << name << "]" << std::endl;
+    std::cout << "[ => Accuracy : " << accuracy(ds) << "]" <<  std::endl;
+
+}
+
 void NeuralNetwork::performance(Dataset &ds)
 {
     performance(ds, "");
 }
+
 
 void NeuralNetwork::binary_confusion_matrix(Dataset &ds, const float threshold)
 {

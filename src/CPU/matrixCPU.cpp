@@ -209,7 +209,7 @@ matrix<CPU> matrix<CPU>::bcast_reversed_mat_mul_to_stacked_matrix(const matrix<C
 
     matrix<CPU> res = create_stacked_matrix(rows, cols, height);
 
-
+    #pragma omp parallel for collapse(2)
     for(size_t layer = 0; layer < height; layer++)
         for(size_t row = 0; row < rows; row++) 
         {   
@@ -242,7 +242,7 @@ matrix<CPU> matrix<CPU>::bcast_mat_mul_to_stacked_matrix(const matrix<CPU> &a, c
 
     matrix<CPU> res = create_stacked_matrix(rows, cols, height);
 
-    
+    #pragma omp parallel for collapse(2)
     for(size_t layer = 0; layer < height; layer++)
         for(size_t row = 0; row < rows; row++) 
         {   
@@ -557,7 +557,9 @@ matrix<CPU> matrix<CPU>::operator%(const matrix<CPU> &a) const
         return bcast_hadamard_to_stacked_matrix(a, *this);
 
 
+    
     matrix<CPU> res = create_stacked_matrix(a.rows(), a.columns(), a.height());
+    
     for(size_t i = 0; i < a.elements(); i++)
         res[i] = this->data[i] * a[i];
     return res;
@@ -578,6 +580,7 @@ matrix<CPU> matrix<CPU>::operator+(const matrix<CPU> &a) const
         return bcast_add_to_stacked_matrix(a, *this);
 
     matrix<CPU> res = create_stacked_matrix(a.rows(), a.columns(), a.height());
+
     for(size_t i = 0; i < a.elements(); i++)
         res[i] = this->data[i] + a[i];
     return res;
@@ -586,6 +589,7 @@ matrix<CPU> matrix<CPU>::operator+(const matrix<CPU> &a) const
 matrix<CPU> matrix<CPU>::operator+(const float &a) const
 {
     matrix<CPU> res = create_stacked_matrix(this->rows(), this->columns(), this->height());
+    
     for(size_t i = 0; i < this->elements(); i++)
         res[i] = this->data[i] + a;
     return res;
@@ -604,6 +608,7 @@ matrix<CPU> matrix<CPU>::operator-(const matrix<CPU> &a) const
         return bcast_add_to_stacked_matrix(a * (-1), *this);
 
     matrix<CPU> res = create_stacked_matrix(a.rows(), a.columns(), a.height());
+
     for(size_t i = 0; i < a.elements(); i++)
         res[i] = this->data[i] - a[i];
     return res;
@@ -613,6 +618,7 @@ matrix<CPU> matrix<CPU>::operator-(const matrix<CPU> &a) const
 matrix<CPU> matrix<CPU>::operator-(const float &a) const
 {
     matrix<CPU> res = create_stacked_matrix(this->rows(), this->columns(), this->height());
+ 
     for(size_t i = 0; i < this->elements(); i++)
         res[i] = this->data[i] - a;
     return res;
@@ -621,6 +627,8 @@ matrix<CPU> matrix<CPU>::operator-(const float &a) const
 matrix<CPU> matrix<CPU>::operator*(const float &a) const
 {
     matrix<CPU> res = create_stacked_matrix(this->rows(), this->columns(), this->height());
+
+    
     for(size_t i = 0; i < this->elements(); i++)
         res[i] = this->data[i] * a;
     return res;
@@ -645,7 +653,7 @@ matrix<CPU> matrix<CPU>::operator*(const matrix<CPU> &a) const
 
     matrix<CPU> res = create_stacked_matrix(rows, cols, this->h);
 
-
+    #pragma omp parallel for collapse(2)
     for(size_t layer = 0; layer < this->h; layer++)
         for(size_t row = 0; row < rows; row++) 
         {
@@ -704,11 +712,13 @@ matrix<CPU> matrix<CPU>::transpose(const matrix<CPU> &a)
 
     matrix<CPU> res = create_stacked_matrix(columns,rows, a.height());
 
+
     for(size_t layer = 0; layer < a.height(); layer++)
     {
-        size_t offset = layer * (rows * columns);
         for(size_t row = 0; row < rows; row++)
-        {
+        {   
+            size_t offset = layer * (rows * columns);
+
             for(size_t col = 0; col< columns; col++)
             {
                 res[col * res.columns() + row + offset] = a[row * columns + col + offset];

@@ -39,7 +39,10 @@ class NeuralNetwork
 private:
 
     bool imported = false;
+    bool print = true;
+    
     Loss loss_function_class;
+
 
     size_t lfunc_type;
     std::vector<size_t> afunc_type;
@@ -68,6 +71,8 @@ public:
 
     NeuralNetwork();
 
+    void disable_print();
+
     void add_layer(const size_t neurons, activation_type  atype);
     void configure_loss_function(loss_type ltype);
     void set_loss_weights(const std::vector<float> w);
@@ -84,6 +89,7 @@ public:
 
     Matrix run(const Matrix& input);
 
+    float accuracy(Dataset &ds);
     void performance(Dataset& ds, std::string name);
     void performance(Dataset& ds);
     
