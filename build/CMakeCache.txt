@@ -14,6 +14,15 @@
 # EXTERNAL cache entries
 ########################
 
+//Benchmark
+BUILD_BENCHMARK:BOOL=ON
+
+//No help, variable specified on the command line.
+BUILD_BENCHMARKS:UNINITIALIZED=ON
+
+//Examples
+BUILD_EXAMPLES:BOOL=OFF
+
 //Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=/usr/bin/addr2line
 
@@ -140,7 +149,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=DEEPLEARNINGLIBARY
+CMAKE_PROJECT_NAME:STATIC=DeepModel
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/usr/bin/ranlib
@@ -435,10 +444,19 @@ DEEPLEARNINGLIBARY_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 DEEPLEARNINGLIBARY_SOURCE_DIR:STATIC=/home/lucbr/Documents/DeepLearningLibary
 
+//Value Computed by CMake
+DeepModel_BINARY_DIR:STATIC=/home/lucbr/Documents/DeepLearningLibary/build
+
+//Value Computed by CMake
+DeepModel_IS_TOP_LEVEL:STATIC=ON
+
+//Value Computed by CMake
+DeepModel_SOURCE_DIR:STATIC=/home/lucbr/Documents/DeepLearningLibary
+
 //Enable Address Sanitizer
 ENABLE_ASAN:BOOL=OFF
 
-//CUDA Support
+//CUDA
 ENABLE_CUDA:BOOL=ON
 
 //CXX compiler flags for OpenMP parallelization
@@ -556,7 +574,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=1
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=3
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

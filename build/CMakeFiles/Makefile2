@@ -63,42 +63,101 @@ CMAKE_BINARY_DIR = /home/lucbr/Documents/DeepLearningLibary/build
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/DEEPLEARNINGLIBARY.dir/all
+all: src/all
+all: benchmark/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
-preinstall:
+preinstall: src/preinstall
+preinstall: benchmark/preinstall
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/DEEPLEARNINGLIBARY.dir/clean
+clean: src/clean
+clean: benchmark/clean
 .PHONY : clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/DEEPLEARNINGLIBARY.dir
+# Directory level rules for directory benchmark
+
+# Recursive "all" directory target.
+benchmark/all: benchmark/CMakeFiles/deepmodel_benchmark.dir/all
+.PHONY : benchmark/all
+
+# Recursive "preinstall" directory target.
+benchmark/preinstall:
+.PHONY : benchmark/preinstall
+
+# Recursive "clean" directory target.
+benchmark/clean: benchmark/CMakeFiles/deepmodel_benchmark.dir/clean
+.PHONY : benchmark/clean
+
+#=============================================================================
+# Directory level rules for directory src
+
+# Recursive "all" directory target.
+src/all: src/CMakeFiles/DeepModel.dir/all
+.PHONY : src/all
+
+# Recursive "preinstall" directory target.
+src/preinstall:
+.PHONY : src/preinstall
+
+# Recursive "clean" directory target.
+src/clean: src/CMakeFiles/DeepModel.dir/clean
+.PHONY : src/clean
+
+#=============================================================================
+# Target rules for target src/CMakeFiles/DeepModel.dir
 
 # All Build rule for target.
-CMakeFiles/DEEPLEARNINGLIBARY.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEEPLEARNINGLIBARY.dir/build.make CMakeFiles/DEEPLEARNINGLIBARY.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEEPLEARNINGLIBARY.dir/build.make CMakeFiles/DEEPLEARNINGLIBARY.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8 "Built target DEEPLEARNINGLIBARY"
-.PHONY : CMakeFiles/DEEPLEARNINGLIBARY.dir/all
+src/CMakeFiles/DeepModel.dir/all:
+	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/DeepModel.dir/build.make src/CMakeFiles/DeepModel.dir/depend
+	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/DeepModel.dir/build.make src/CMakeFiles/DeepModel.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles --progress-num=1,2,3,4,5,6,7 "Built target DeepModel"
+.PHONY : src/CMakeFiles/DeepModel.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/DEEPLEARNINGLIBARY.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 8
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/DEEPLEARNINGLIBARY.dir/all
+src/CMakeFiles/DeepModel.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 7
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/CMakeFiles/DeepModel.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 0
-.PHONY : CMakeFiles/DEEPLEARNINGLIBARY.dir/rule
+.PHONY : src/CMakeFiles/DeepModel.dir/rule
 
 # Convenience name for target.
-DEEPLEARNINGLIBARY: CMakeFiles/DEEPLEARNINGLIBARY.dir/rule
-.PHONY : DEEPLEARNINGLIBARY
+DeepModel: src/CMakeFiles/DeepModel.dir/rule
+.PHONY : DeepModel
 
 # clean rule for target.
-CMakeFiles/DEEPLEARNINGLIBARY.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/DEEPLEARNINGLIBARY.dir/build.make CMakeFiles/DEEPLEARNINGLIBARY.dir/clean
-.PHONY : CMakeFiles/DEEPLEARNINGLIBARY.dir/clean
+src/CMakeFiles/DeepModel.dir/clean:
+	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/DeepModel.dir/build.make src/CMakeFiles/DeepModel.dir/clean
+.PHONY : src/CMakeFiles/DeepModel.dir/clean
+
+#=============================================================================
+# Target rules for target benchmark/CMakeFiles/deepmodel_benchmark.dir
+
+# All Build rule for target.
+benchmark/CMakeFiles/deepmodel_benchmark.dir/all: src/CMakeFiles/DeepModel.dir/all
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/deepmodel_benchmark.dir/build.make benchmark/CMakeFiles/deepmodel_benchmark.dir/depend
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/deepmodel_benchmark.dir/build.make benchmark/CMakeFiles/deepmodel_benchmark.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles --progress-num=8,9 "Built target deepmodel_benchmark"
+.PHONY : benchmark/CMakeFiles/deepmodel_benchmark.dir/all
+
+# Build rule for subdir invocation for target.
+benchmark/CMakeFiles/deepmodel_benchmark.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 9
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/CMakeFiles/deepmodel_benchmark.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 0
+.PHONY : benchmark/CMakeFiles/deepmodel_benchmark.dir/rule
+
+# Convenience name for target.
+deepmodel_benchmark: benchmark/CMakeFiles/deepmodel_benchmark.dir/rule
+.PHONY : deepmodel_benchmark
+
+# clean rule for target.
+benchmark/CMakeFiles/deepmodel_benchmark.dir/clean:
+	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/deepmodel_benchmark.dir/build.make benchmark/CMakeFiles/deepmodel_benchmark.dir/clean
+.PHONY : benchmark/CMakeFiles/deepmodel_benchmark.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

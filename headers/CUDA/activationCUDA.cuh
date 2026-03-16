@@ -97,7 +97,7 @@ public:
     size_t batch_size;
 };
 
-inline adam_optimizer<CUDA>::adam_optimizer() : lr(0.001), beta1(0.9), beta2(0.999), epsilon(1e-8), lambda(10e-4), batch_size(64)
+inline adam_optimizer<CUDA>::adam_optimizer() : lr(0.001), beta1(0.9), beta2(0.999), epsilon(10e-8), lambda(10e-4), batch_size(64)
 {}
 
 

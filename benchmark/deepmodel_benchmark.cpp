@@ -4,8 +4,8 @@
 #include <experimental/simd>
 #include <omp.h>
 
-const std::string testset_path = "../datasets/mnist_test.csv";
-const std::string trainset_path = "../datasets/mnist_train.csv";
+const std::string testset_path = "datasets/mnist_test.csv";
+const std::string trainset_path = "datasets/mnist_train.csv";
 
 
 void benchmark(const size_t batch_size, const size_t epochs, NeuralNetwork nn, Dataset &train, Dataset& test)
@@ -65,24 +65,32 @@ int main()
     
     nn.initalise_he_weights();
     
+    std::cout << "====[Benchmark for MNIST dataset with 60k samples]====" << std::endl;
+    std::cout << "  --> Neuralnetwork: 784 x 128 x 128 x10" << std::endl;
+    std::cout << "  --> Activation functions : ReLU ReLU Softmax" << std::endl;
+    std::cout << "  --> Loss function : Cross Entropy" << std::endl;
+    std::cout << "  -->learnrate : 0.001 (for both runs)" << std::endl;
 
-    std::cout << "----------------------------" << std::endl;
+
+    std::cout << "====[Mini Batch Gradient descent:]=====================" << std::endl;
     benchmark(1, 1, nn, train, test);
     benchmark(2, 1, nn, train, test);
     benchmark(4, 1, nn, train, test);
     benchmark(8, 1, nn, train, test);
-    benchmark(16, 1, nn, train, test);
-    benchmark(32, 1, nn, train, test);
-    benchmark(64, 1, nn, train, test);
+    benchmark(16, 20, nn, train, test);
+    benchmark(32, 20, nn, train, test);
+    benchmark(64, 20, nn, train, test);
 
-    std::cout << "----------------------------" << std::endl;
+
+    std::cout << "====[Mini batch gradient descent with Adam and L2 regulazation enabled]====" << std::endl;
+    std::cout << "  --> beta1 = 0.9, beta2 = 0.999, epsilon = 10e-8, lambda = 10e-4" << std::endl;
     benchmark_adam(1, 1, nn, train, test);
     benchmark_adam(2, 1, nn, train, test);
     benchmark_adam(4, 1, nn, train, test);
     benchmark_adam(8, 1, nn, train, test);
-    benchmark_adam(16, 1, nn, train, test);
-    benchmark_adam(32, 1, nn, train, test);
-    benchmark_adam(64, 1, nn, train, test);
+    benchmark_adam(16, 20, nn, train, test);
+    benchmark_adam(32, 20, nn, train, test);
+    benchmark_adam(64, 20, nn, train, test);
 
 
 

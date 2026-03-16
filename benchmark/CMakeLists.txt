@@ -1,0 +1,2 @@
+add_executable(deepmodel_benchmark deepmodel_benchmark.cpp)
+target_link_libraries(deepmodel_benchmark PRIVATE DeepModel)

@@ -8,9 +8,11 @@ set(CMAKE_DEPENDS_GENERATOR "Unix Makefiles")
 set(CMAKE_MAKEFILE_DEPENDS
   "CMakeCache.txt"
   "/home/lucbr/Documents/DeepLearningLibary/CMakeLists.txt"
+  "/home/lucbr/Documents/DeepLearningLibary/benchmark/CMakeLists.txt"
   "CMakeFiles/3.28.3/CMakeCUDACompiler.cmake"
   "CMakeFiles/3.28.3/CMakeCXXCompiler.cmake"
   "CMakeFiles/3.28.3/CMakeSystem.cmake"
+  "/home/lucbr/Documents/DeepLearningLibary/src/CMakeLists.txt"
   "/usr/share/cmake-3.28/Modules/CMakeCUDAInformation.cmake"
   "/usr/share/cmake-3.28/Modules/CMakeCXXInformation.cmake"
   "/usr/share/cmake-3.28/Modules/CMakeCommonLanguageInclude.cmake"
@@ -48,9 +50,12 @@ set(CMAKE_MAKEFILE_OUTPUTS
 # Byproducts of CMake generate step:
 set(CMAKE_MAKEFILE_PRODUCTS
   "CMakeFiles/CMakeDirectoryInformation.cmake"
+  "src/CMakeFiles/CMakeDirectoryInformation.cmake"
+  "benchmark/CMakeFiles/CMakeDirectoryInformation.cmake"
   )
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/DEEPLEARNINGLIBARY.dir/DependInfo.cmake"
+  "src/CMakeFiles/DeepModel.dir/DependInfo.cmake"
+  "benchmark/CMakeFiles/deepmodel_benchmark.dir/DependInfo.cmake"
   )
