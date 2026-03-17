@@ -4,7 +4,21 @@
 #include <functional>
 
 
-
+/**
+ * @brief Implementation of all Activation functions for the CPU.
+ * 
+ * Functions : 
+ * Activation::IDENTITY
+ * Activation::RELU         
+ * Activation::ELU          
+ * Activation::SIGMOID      
+ * Activation::LOG_SIGMOID  
+ * Activation::HARD_SIGMOID 
+ * Activation::TANH         
+ * Activation::SOFTMAX      
+ * 
+ * 
+ */
 template<>
 class activation<CPU>
 {   
@@ -46,7 +60,13 @@ public:
 };
 
 
-
+/**
+ * @brief Implementation of all loss functions for the CPU.
+ * 
+ * Functions : 
+ * Loss::QUADRATIC
+ * Loss::CROSS_ENTROPY
+ */
 template<>
 class loss<CPU>
 {  
@@ -73,7 +93,14 @@ public:
     loss_derivative_fn get_derivative_fn(loss_type ltype, activation_type atype);
 };
 
-
+/**
+ * @brief Implementation of basic optimizer types for the CPU.
+ * 
+ * Functions : 
+ * Optimizer::STOCHASTIC_GRADIENT_DESCENT
+ * Optimizer::BATCH_GRADIENT_DESCENT
+ * Optimizer::MIN_BATCH_GRADIENT_DESCENT
+ */
 template<>
 class optimizer<CPU>
 {
@@ -85,7 +112,22 @@ public:
 
 
 
-
+/**
+ * @brief Adam optimizer
+ * 
+ * @param lr learning rate (default = 0.001) 
+ * @param beta1 (default = 0.9)
+ * @param beta2 (default = 0.99)
+ * @param epsilon (default = 10e-8)
+ * @param batch_size (default = 64)
+ * @param lambda Parameter for l2 regulazation. (default 10e-4)
+ * 
+ * example:
+ * 
+ * ADAM_Optimizer adam:
+ * adam.lr = 0.1;
+ * 
+ */
 template<>
 class adam_optimizer<CPU> : private optimizer<CPU>
 {
@@ -103,7 +145,13 @@ inline adam_optimizer<CPU>::adam_optimizer() : lr(0.001), beta1(0.9), beta2(0.99
 {}
 
 
-
+/**
+ * @brief Class for setting specialized hyperparameters.
+ * 
+ * @param lr learning rate (default = 0.001)
+ * @param lambda Parameter for l2 regulazation. (default 10e-4)
+ * @param batch_size (default = 64)
+ */
 template<>
 class hyperparameter<CPU> : private optimizer<CPU>
 {

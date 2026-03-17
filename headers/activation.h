@@ -1,3 +1,13 @@
+/**
+ * @file activation.h
+ * @brief Interface for the usage of activation functions, loss functions and various optimizers.
+ * 
+ */
+
+
+
+
+
 #pragma once
 #include "backend.h"
 #include "matrix.h"
