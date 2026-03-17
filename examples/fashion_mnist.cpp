@@ -2,6 +2,8 @@
 #include "DeepModel.h"
 
 
+
+
 const std::string path = "datasets/fashion-mnist_train.csv";
 
 int main()

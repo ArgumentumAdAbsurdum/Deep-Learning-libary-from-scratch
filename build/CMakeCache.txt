@@ -457,7 +457,7 @@ DeepModel_SOURCE_DIR:STATIC=/home/lucbr/Documents/DeepLearningLibary
 ENABLE_ASAN:BOOL=OFF
 
 //CUDA
-ENABLE_CUDA:BOOL=ON
+ENABLE_CUDA:BOOL=OFF
 
 //CXX compiler flags for OpenMP parallelization
 OpenMP_CXX_FLAGS:STRING=-fopenmp

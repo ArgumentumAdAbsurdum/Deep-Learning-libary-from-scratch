@@ -4,8 +4,7 @@
 #include <experimental/simd>
 #include <omp.h>
 
-const std::string testset_path = "datasets/mnist_test.csv";
-const std::string trainset_path = "datasets/mnist_train.csv";
+const std::string path = "datasets/mnist_test.csv";
 
 
 void benchmark(const size_t batch_size, const size_t epochs, NeuralNetwork nn, Dataset &train, Dataset& test)
@@ -44,15 +43,12 @@ void benchmark_adam(const size_t batch_size, const size_t epochs, NeuralNetwork 
 int main()
 {
 
-    Dataset train = Dataset(trainset_path);
-    Dataset test = Dataset(testset_path);
+    Dataset data = Dataset(path);
     
-    train.normalize();
-    test.normalize();
+    data.normalize();
+    data.one_hot_encode();     
 
-    train.one_hot_encode();
-    test.one_hot_encode();     
-
+    auto [train, test] = data.split(0.8);
 
     NeuralNetwork nn;
     nn.disable_print();

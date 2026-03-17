@@ -1,3 +1,12 @@
+/**
+ * @file matrix.h
+ * @brief Enables the platform independent interface for the linear alegebra libary.
+ * 
+ *  It chooses automatically between the CPU and CUDA implementation for the matrix calculations.
+ *  Always use 'Matrix' instead of matrix<CPU> or matrix<CUDA>.
+ */
+
+
 #pragma once
 #include "backend.h"
 

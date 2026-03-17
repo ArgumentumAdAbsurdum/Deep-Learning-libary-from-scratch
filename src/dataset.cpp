@@ -1,3 +1,6 @@
+
+
+
 #include "DeepModel.h"
 #include <algorithm>
 #include <fstream>    
@@ -146,10 +149,12 @@ Dataset::Dataset(const std::string filename, const std::vector<size_t>& ignore, 
 
 std::pair<Dataset, Dataset> Dataset::split(float ratio)
 {
+
+    if(ratio > 1 || ratio < 0)
+        throw std::runtime_error("split : ratio needs to be between 0 and 1");
+
     size_t pivot = ratio * this->input.height();
     
-
-
     Dataset first;
     first.input = this->input.slice_stacked_matrix(0, pivot);
     first.expected = this->expected.slice_stacked_matrix(0, pivot);
@@ -237,8 +242,23 @@ void Dataset::print_information()
         std::cout << "Dataset is empty." << std::endl; 
     }
     
-    std::cout << "Samples : " << this->input.height() << std::endl;
-    std::cout << "Input vector dim : " << this->input.rows() << std::endl;
-    std::cout << "Output vector dim : " << this->expected.rows() << std::endl;
+    std::cout << "Samples : " << sample_size()  << std::endl;
+    std::cout << "Input vector dim : " << input_dim() << std::endl;
+    std::cout << "Output vector dim : " << expected_dim() << std::endl;
 
+}
+
+size_t Dataset::sample_size()
+{
+    return this->input.height();
+}
+
+size_t Dataset::input_dim()
+{
+    return this->input.rows();
+}
+
+size_t Dataset::expected_dim()
+{
+    return this->expected.rows();
 }
