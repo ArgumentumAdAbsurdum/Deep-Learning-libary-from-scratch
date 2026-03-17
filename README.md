@@ -148,7 +148,7 @@ int main()
 
 ### Mini-Batch SGD 
  
-| Batch Size | Epochs | NeuroForge (CPU) | NeuroForge (CUDA) | PyTorch (CPU) |
+| Batch Size | Epochs | DeepModel (CPU) | DeepModel (CUDA) | PyTorch (CPU) |
 |:----------:|:------:|-----------------:|------------------:|--------------:|
 | 1  | 1  |  3.49s · 89.6% |  3.92s · 88.2% | 21.26s · 90.9% |
 | 2  | 1  |  1.91s · 86.8% |  1.94s · 80.0% | 10.05s · 89.1% |
@@ -163,7 +163,7 @@ int main()
 
 > β₁ = 0.9 · β₂ = 0.999 · ε = 10e-8 · λ = 10e-3
 
-| Batch Size | Epochs | NeuroForge (CPU) | NeuroForge (CUDA) | PyTorch (CPU) |
+| Batch Size | Epochs | DeepModel (CPU) | DeepModel (CUDA) | PyTorch (CPU) |
 |:----------:|:------:|-----------------:|------------------:|--------------:|
 | 1  | 1  | 13.32s · 93.9% |  7.56s · 91.6% | 49.61s · 94.5% |
 | 2  | 1  |  5.33s · 92.4% |  3.79s · 91.4% | 24.43s · 94.9% |
