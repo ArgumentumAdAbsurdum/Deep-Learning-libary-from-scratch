@@ -136,12 +136,12 @@ src/clean: src/CMakeFiles/DeepModel.dir/clean
 src/CMakeFiles/DeepModel.dir/all:
 	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/DeepModel.dir/build.make src/CMakeFiles/DeepModel.dir/depend
 	$(MAKE) $(MAKESILENT) -f src/CMakeFiles/DeepModel.dir/build.make src/CMakeFiles/DeepModel.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target DeepModel"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles --progress-num=1,2,3,4,5,6,7 "Built target DeepModel"
 .PHONY : src/CMakeFiles/DeepModel.dir/all
 
 # Build rule for subdir invocation for target.
 src/CMakeFiles/DeepModel.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 7
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 src/CMakeFiles/DeepModel.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 0
 .PHONY : src/CMakeFiles/DeepModel.dir/rule
@@ -162,12 +162,12 @@ src/CMakeFiles/DeepModel.dir/clean:
 examples/CMakeFiles/fashion_mnist.dir/all: src/CMakeFiles/DeepModel.dir/all
 	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/fashion_mnist.dir/build.make examples/CMakeFiles/fashion_mnist.dir/depend
 	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/fashion_mnist.dir/build.make examples/CMakeFiles/fashion_mnist.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles --progress-num=9,10 "Built target fashion_mnist"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles --progress-num=10,11 "Built target fashion_mnist"
 .PHONY : examples/CMakeFiles/fashion_mnist.dir/all
 
 # Build rule for subdir invocation for target.
 examples/CMakeFiles/fashion_mnist.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 8
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 9
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 examples/CMakeFiles/fashion_mnist.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 0
 .PHONY : examples/CMakeFiles/fashion_mnist.dir/rule
@@ -188,12 +188,12 @@ examples/CMakeFiles/fashion_mnist.dir/clean:
 examples/CMakeFiles/mnist.dir/all: src/CMakeFiles/DeepModel.dir/all
 	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/mnist.dir/build.make examples/CMakeFiles/mnist.dir/depend
 	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/mnist.dir/build.make examples/CMakeFiles/mnist.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles --progress-num=13,14 "Built target mnist"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles --progress-num=14,15 "Built target mnist"
 .PHONY : examples/CMakeFiles/mnist.dir/all
 
 # Build rule for subdir invocation for target.
 examples/CMakeFiles/mnist.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 8
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 9
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 examples/CMakeFiles/mnist.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 0
 .PHONY : examples/CMakeFiles/mnist.dir/rule
@@ -214,12 +214,12 @@ examples/CMakeFiles/mnist.dir/clean:
 examples/CMakeFiles/linear_algebra.dir/all: src/CMakeFiles/DeepModel.dir/all
 	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/linear_algebra.dir/build.make examples/CMakeFiles/linear_algebra.dir/depend
 	$(MAKE) $(MAKESILENT) -f examples/CMakeFiles/linear_algebra.dir/build.make examples/CMakeFiles/linear_algebra.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles --progress-num=11,12 "Built target linear_algebra"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles --progress-num=12,13 "Built target linear_algebra"
 .PHONY : examples/CMakeFiles/linear_algebra.dir/all
 
 # Build rule for subdir invocation for target.
 examples/CMakeFiles/linear_algebra.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 8
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 9
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 examples/CMakeFiles/linear_algebra.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 0
 .PHONY : examples/CMakeFiles/linear_algebra.dir/rule
@@ -240,12 +240,12 @@ examples/CMakeFiles/linear_algebra.dir/clean:
 benchmark/CMakeFiles/deepmodel_benchmark.dir/all: src/CMakeFiles/DeepModel.dir/all
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/deepmodel_benchmark.dir/build.make benchmark/CMakeFiles/deepmodel_benchmark.dir/depend
 	$(MAKE) $(MAKESILENT) -f benchmark/CMakeFiles/deepmodel_benchmark.dir/build.make benchmark/CMakeFiles/deepmodel_benchmark.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles --progress-num=7,8 "Built target deepmodel_benchmark"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles --progress-num=8,9 "Built target deepmodel_benchmark"
 .PHONY : benchmark/CMakeFiles/deepmodel_benchmark.dir/all
 
 # Build rule for subdir invocation for target.
 benchmark/CMakeFiles/deepmodel_benchmark.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 8
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 9
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 benchmark/CMakeFiles/deepmodel_benchmark.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/lucbr/Documents/DeepLearningLibary/build/CMakeFiles 0
 .PHONY : benchmark/CMakeFiles/deepmodel_benchmark.dir/rule

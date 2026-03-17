@@ -92,14 +92,23 @@ def benchmark_adam(batch_size, epochs):
         output = model(test_x)
         predicted = torch.argmax(output, dim = 1)
         accuracy = (predicted == test_y).float().mean()
-        print(f"accuracy : {accuracy:.2f}]")
+        print(f"accuracy : {(accuracy * 100 ):.3f}]")
 
 
 
 
 
 if __name__ == "__main__":
-    print(f"--------------------------------------------------------")
+
+
+    print(f"====[Benchmark for MNIST dataset with 60k samples]====")
+    print(f"  --> Neuralnetwork: 784 x 128 x 128 x10")
+    print(f"  --> Activation functions : ReLU ReLU Softmax")
+    print(f"  --> Loss function : Cross Entropy")
+    print(f"  -->learnrate : 0.001 (for both runs)")
+
+
+    print(f"====[Mini Batch Gradient descent:]=====================")
     benchmark(batch_size=1, epochs=1)
     benchmark(batch_size=2, epochs=1)
     benchmark(batch_size=4, epochs=1)
@@ -109,7 +118,8 @@ if __name__ == "__main__":
     benchmark(batch_size=64, epochs=20)
 
 
-    print(f"--------------------------------------------------------")
+    print(f"====[Mini batch gradient descent with Adam and L2 regulazation enabled]====")
+    print(f" --> beta1 = 0.9, beta2 = 0.999, epsilon = 10e-8, lambda = 10e-4")
     benchmark_adam(batch_size=1, epochs=1)
     benchmark_adam(batch_size=2, epochs=1)
     benchmark_adam(batch_size=4, epochs=1)
