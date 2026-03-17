@@ -17,15 +17,14 @@ The Github repo contains training examples with mnist and fashion-mnist, while b
 - **Backpropagation with L2 regularization**
 - **Weighted loss support**
 - **Random / Xavier / He weight initalization**
-- Own **Dataset** class, which allows operations like one hot encoding, normalization, spliting
+- Own **Dataset** class, which allows operations like one hot encoding, normalization & spliting
 
 
 ### Optimizers
 `ADAM_OPTIMIZER`, `STOCHASTIC GRADIENT DESCENT`, `BATCH GRADIENT DESCENT`, `MINI BATCH GRADIENT DESCENT`
 
 ### Activation functions
-`RELU`, `IDENTITY`, `ELU`, `SIGMOID`, `LOG_SIGMOID`, `HARD_SIGMOID`, 
-`TANH`, `SOFTMAX`
+`RELU` · `IDENTITY` · `ELU` · `SIGMOID` · `LOG_SIGMOID` · `HARD_SIGMOID` · `TANH` · `SOFTMAX`
 
 ### Loss function
 `CROSS ENTROPY`, `QUADRATIC (MLE)`
