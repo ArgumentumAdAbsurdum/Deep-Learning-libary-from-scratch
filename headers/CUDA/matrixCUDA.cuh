@@ -4,7 +4,7 @@
 #include <iostream>
 #include <numeric>
 #include <unordered_map>
-
+#include <random>
 
 
 /**
@@ -21,7 +21,7 @@ private:
     bool owns_memory = true;
     
 public:
-
+    static std::mt19937 gen;
     static constexpr int THREADS_1D = 256;
     static constexpr int THREADS_2D = 16;
 
@@ -107,8 +107,6 @@ public:
      * @param end end height (exclusive)
      */
     matrix<CUDA> slice_stacked_matrix(size_t start, size_t end);
-
-
 
     /**
      * @brief Sums all stacks of a matrix together.

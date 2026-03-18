@@ -7,6 +7,8 @@
 #include <cstring>
 
 
+std::mt19937 matrix<CPU>::gen(128);
+
 matrix<CPU>::matrix() : n(0), h(0), c(0), r(0), data(nullptr), owns_memory(false)
 {
 }
@@ -51,13 +53,10 @@ matrix<CPU>::matrix(const size_t rows, const size_t columns, float val) : matrix
 matrix<CPU>::matrix(const size_t rows, const size_t columns, float start, float end) : matrix(rows, columns)
 {
     std::vector<float> arr(n);
-    std::mt19937 gen(
-        std::random_device{}()
-    );
     std::uniform_real_distribution<float> dist(start, end);
 
     for (size_t i = 0; i < this->n; ++i){
-        arr[i] = dist(gen);
+        arr[i] = dist(matrix<CPU>::gen);
     }
     memcpy(this->data, arr.data(), sizeof(float) * n);
 
@@ -113,14 +112,11 @@ matrix<CPU> matrix<CPU>::create_stacked_matrix(const size_t rows, const size_t c
     matrix<CPU> result = create_stacked_matrix(rows, columns, height);
     std::vector<float> arr(result.n);
     
-    std::mt19937 gen(
-        std::random_device{}()
-    );
     std::uniform_real_distribution<float> dist(start, end);
 
     for (size_t i = 0; i < result.n; ++i)
     {
-        arr[i] = dist(gen);
+        arr[i] = dist(matrix<CPU>::gen);
     }
     memcpy(result.data, arr.data(), sizeof(float) * result.n);
     return result;

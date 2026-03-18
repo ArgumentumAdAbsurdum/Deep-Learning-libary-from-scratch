@@ -4,7 +4,7 @@
 #include <iostream>
 #include <numeric>
 #include <unordered_map>
-
+#include <random>
 
 /**
  * @brief Matrix class, which enables to user to do linear algebra operations. 
@@ -16,10 +16,13 @@ private:
     float* data;
     size_t r,c, h;
     size_t n;
+    
     bool owns_memory = true;
     
-public:
 
+public:
+    static std::mt19937 gen;
+    
     /** @brief creates empty matrix of shape 0x0x0 */
     matrix();
 

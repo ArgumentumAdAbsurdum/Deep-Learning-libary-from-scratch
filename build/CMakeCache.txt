@@ -17,11 +17,8 @@
 //Benchmark
 BUILD_BENCHMARK:BOOL=ON
 
-//No help, variable specified on the command line.
-BUILD_BENCHMARKS:UNINITIALIZED=ON
-
 //Examples
-BUILD_EXAMPLES:BOOL=ON
+BUILD_EXAMPLES:BOOL=OFF
 
 //Path to a program.
 CMAKE_ADDR2LINE:FILEPATH=/usr/bin/addr2line
@@ -436,15 +433,6 @@ CUDA_nvrtc_static_LIBRARY:FILEPATH=/usr/local/cuda-13.1/targets/x86_64-linux/lib
 CUDA_pcsamplingutil_LIBRARY:FILEPATH=/usr/local/cuda-13.1/targets/x86_64-linux/lib/libpcsamplingutil.so
 
 //Value Computed by CMake
-DEEPLEARNINGLIBARY_BINARY_DIR:STATIC=/home/lucbr/Documents/DeepLearningLibary/build
-
-//Value Computed by CMake
-DEEPLEARNINGLIBARY_IS_TOP_LEVEL:STATIC=ON
-
-//Value Computed by CMake
-DEEPLEARNINGLIBARY_SOURCE_DIR:STATIC=/home/lucbr/Documents/DeepLearningLibary
-
-//Value Computed by CMake
 DeepModel_BINARY_DIR:STATIC=/home/lucbr/Documents/DeepLearningLibary/build
 
 //Value Computed by CMake
@@ -453,11 +441,8 @@ DeepModel_IS_TOP_LEVEL:STATIC=ON
 //Value Computed by CMake
 DeepModel_SOURCE_DIR:STATIC=/home/lucbr/Documents/DeepLearningLibary
 
-//Enable Address Sanitizer
-ENABLE_ASAN:BOOL=OFF
-
 //CUDA
-ENABLE_CUDA:BOOL=ON
+ENABLE_CUDA:BOOL=OFF
 
 //CXX compiler flags for OpenMP parallelization
 OpenMP_CXX_FLAGS:STRING=-fopenmp
@@ -574,7 +559,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=4
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=3
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP

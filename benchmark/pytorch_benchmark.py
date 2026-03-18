@@ -10,7 +10,8 @@ torch.set_num_threads(8)
 torch.set_num_interop_threads(1)
 
 seed = 128
-torch.manual_seed(seed)
+
+torch.manual_seed(seed)        
 np.random.seed(seed)
 random.seed(seed)
 
@@ -50,34 +51,27 @@ def create_model():
 
 
 
-def benchmark(batch_size, epochs):
-
-    model = create_model()
-
-    sgd = torch.optim.SGD(model.parameters(), lr=0.001)
-    loss_fn = nn.CrossEntropyLoss()
+def train(batch_size, epochs, model, optimizer, loss_fn):
     
+    num_batches = len(train_x) // batch_size
+    rng = random.Random(seed)
     start = time.time()
+    
 
-    for epoch in range(epochs):
+    for _ in range(num_batches * epochs):
 
-        g = torch.Generator()
-        g.manual_seed(seed + epoch)
-        perm = torch.randperm(len(train_x), generator=g)
+        block = rng.randint(0, num_batches - 1)
 
-        shuffled_x = train_x[perm]
-        shuffled_y = train_y[perm]
+        start_idx = block * batch_size
 
+        batch_x = train_x[start_idx : start_idx + batch_size]
+        batch_y = train_y[start_idx : start_idx + batch_size]
 
-        for i in range(0, len(train_x), batch_size):
-            batch_x = shuffled_x[i : i + batch_size]
-            batch_y = shuffled_y[i : i + batch_size]
-
-            sgd.zero_grad()
-            output = model(batch_x)
-            loss = loss_fn(output, batch_y)
-            loss.backward()
-            sgd.step()
+        optimizer.zero_grad()
+        output = model(batch_x)
+        loss = loss_fn(output, batch_y)
+        loss.backward()
+        optimizer.step()
 
     end = time.time()
     print(f"[batch_size = {batch_size}, epochs = {epochs} => time :  {(end - start):.2f}s, ", end="")
@@ -89,6 +83,17 @@ def benchmark(batch_size, epochs):
         print(f"accuracy : {(accuracy * 100 ):.3f}]")
 
 
+
+
+
+def benchmark(batch_size, epochs):
+
+    model = create_model()
+
+    sgd = torch.optim.SGD(model.parameters(), lr=0.001)
+    loss_fn= nn.CrossEntropyLoss()
+    
+    train(batch_size=batch_size, epochs = epochs,model=model, optimizer=sgd, loss_fn=loss_fn)
 
 
 
@@ -98,34 +103,7 @@ def benchmark_adam(batch_size, epochs):
     adam = torch.optim.Adam(model.parameters(), lr=0.001, betas=(0.9, 0.999), weight_decay=1e-4)
     loss_fn = nn.CrossEntropyLoss()
 
-    start = time.time()
-    for epoch in range(epochs):
-
-        g = torch.Generator()
-        g.manual_seed(seed + epoch)
-        perm = torch.randperm(len(train_x), generator=g)
-
-        shuffled_x = train_x[perm]
-        shuffled_y = train_y[perm]
-
-        for i in range(0, len(train_x), batch_size):
-            batch_x = shuffled_x[i : i + batch_size]
-            batch_y = shuffled_y[i : i + batch_size]
-
-            adam.zero_grad()
-            output = model(batch_x)
-            loss = loss_fn(output, batch_y)
-            loss.backward()
-            adam.step()
-
-    end = time.time()
-    print(f"[batch_size = {batch_size}, epochs = {epochs} => time :  {(end - start):.2f}s, ", end="")
-
-    with torch.no_grad():
-        output = model(test_x)
-        predicted = torch.argmax(output, dim = 1)
-        accuracy = (predicted == test_y).float().mean()
-        print(f"accuracy : {(accuracy * 100 ):.3f}]")
+    train(batch_size=batch_size, epochs = epochs,model=model, optimizer=adam, loss_fn=loss_fn)
 
 
 

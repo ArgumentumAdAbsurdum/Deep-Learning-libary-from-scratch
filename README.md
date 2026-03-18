@@ -147,7 +147,10 @@ int main()
 
 ## Benchmark
 
-All configurations were run on a mnist Dataset with 60k samples.
+All configurations were run on a mnist Dataset with 60k samples and the same hyperparameters.
+**Furthermore, all random number calculations were performed on the same seed to ensure the replicability of the results.**
+You can also run them yourself. Everything except the mnist dataset is included in /benchmarks.
+
 
 #### Network Architecture:
 Neurons                 : 784 x 128 x 128 x 10
@@ -156,50 +159,52 @@ Activation functions    : RELU RELU SOFTMAX
 
 Loss function           : Cross entropy
 
-**Screenshots of the results really happening are inside benchmarks/result_screenshots**
-You can also run them yourself. Everything is included in /benchmarks.
 
-### Mini-Batch SGD 
+
+### Mini-Batch SGD
  
 | Batch Size | Epochs | DeepModel (CPU) | DeepModel (CUDA) | PyTorch (CPU) |
 |:----------:|:------:|-----------------:|------------------:|--------------:|
-| 1  | 1  |  3.49s · 89.6% |  3.92s · 88.2% | 21.26s · 90.9% |
-| 2  | 1  |  1.91s · 86.8% |  1.94s · 80.0% | 10.05s · 89.1% |
-| 4  | 1  |  1.29s · 83.4% |  1.00s · 39.2% |  5.09s · 83.5% |
-| 8  | 1  |  1.14s · 68.2% |  0.51s · 19.7% |  2.59s · 71.9% |
-| 16 | 20 | 24.67s · 92.2% |  5.50s · 86.9% | 26.30s · 92.6% |
-| 32 | 20 | 36.39s · 88.8% |  3.21s · 77.4% | 13.65s · 90.6% |
-| 64 | 20 | 45.38s · 84.8% |  2.40s · 37.2% |  7.44s · 87.4% |
-
-
+| 1  | 1  |  3.19s · 89.3% |  3.70s · 86.3% | 26.83s · 91.4% |
+| 2  | 1  |  1.81s · 86.8% |  1.87s · 78.1% | 11.44s · 89.1% |
+| 4  | 1  |  1.28s · 83.1% |  1.00s · 42.3% |  5.77s · 86.1% |
+| 8  | 1  |  1.16s · 74.9% |  0.53s · 18.2% |  2.95s · 69.8% |
+| 16 | 20 | 26.05s · 91.9% |  5.50s · 86.0% | 30.29s · 92.5% |
+| 32 | 20 | 34.81s · 89.0% |  3.19s · 75.2% | 15.88s · 90.1% |
+| 64 | 20 | 46.67s · 85.2% |  2.41s · 49.3% |  8.88s · 86.9% |
+ 
 ### Mini-Batch ADAM + L2 Regularization
-
+ 
 > β₁ = 0.9 · β₂ = 0.999 · ε = 10e-8 · λ = 10e-4
-
+ 
 | Batch Size | Epochs | DeepModel (CPU) | DeepModel (CUDA) | PyTorch (CPU) |
 |:----------:|:------:|-----------------:|------------------:|--------------:|
-| 1  | 1  | 13.32s · 93.9% |  7.56s · 91.6% | 49.61s · 94.5% |
-| 2  | 1  |  5.33s · 92.4% |  3.79s · 91.4% | 24.43s · 94.9% |
-| 4  | 1  |  2.51s · 94.7% |  1.94s · 88.8% | 11.44s · 94.8% |
-| 8  | 1  |  1.95s · 93.5% |  1.01s · 91.1% |  5.62s · 95.4% |
-| 16 | 20 | 47.08s · 94.8% | 10.24s · 91.0% | 58.69s · 97.4% |
-| 32 | 20 | 53.23s · 96.6% |  5.86s · 92.4% | 32.30s · 97.7% |
-| 64 | 20 | 65.42s · 96.5% |  4.26s · 93.3% | 14.92s · 97.5% |
+| 1  | 1  | 12.61s · 92.9% |  7.30s · 92.3% | 68.96s · 95.0% |
+| 2  | 1  |  5.04s · 94.5% |  3.75s · 91.2% | 30.95s · 95.7% |
+| 4  | 1  |  2.59s · 93.7% |  1.95s · 92.7% | 15.94s · 95.1% |
+| 8  | 1  |  2.24s · 93.1% |  0.97s · 89.2% |  7.05s · 95.6% |
+| 16 | 20 | 49.16s · 96.5% |  9.97s · 92.8% | 86.18s · 98.0% |
+| 32 | 20 | 57.35s · 97.0% |  5.59s · 93.0% | 42.02s · 97.7% |
+| 64 | 20 | 64.51s · 96.4% |  4.13s · 93.0% | 19.40s · 97.7% |
 
 ### Interpretation of results
 
-DeepModel is both on CPU and CUDA faster than Pytorch on CPU, but has in both cases less accuracy.
-If we look at pytorch_benchmark.py we can see the reason for the longer times quickly:
+DeepModel outperforms PyTorch (CPU) in training speed on both CPU and CUDA with speedups of 2 - 10, but achieves lower accuracy on most configurations.
+The primary reason for the longer runtimes of PyTorch and the accuracy gap, is the autograd system of PyTorch.
+During the forward pass, PyTorch constructs a dynamic direct graph, which contains every mathmatical operations and its dependencies.
+When the backpropagation begins, the gradients are computed by traversing this graph backwards with the chain rule.
+This system is way more flexible and is generalised for any other network architecture (e. g: CNN's etc.).
 
+An additional factor is that the Pytorch training loops runs in Python, which is a interpreted language.
+DeepModel is written in compiled C++, which removes this kind of overhead completely.
+
+**DeepModel is a static backpropagation algorithm, which can only run a simple feed forward topology and is not as flexible as PyTorch.**
+Due to the missing overhead and small batch sizes, DeepModel outperformes PyTorch in this case.
+
+Source : https://docs.pytorch.org/tutorials/beginner/blitz/autograd_tutorial.html
 ```python3
-    for epoch in range(epochs):
-        for i in range(0, len(train_x), batch_size):
-            batch_x = train_x[i : i + batch_size]
-            batch_y = train_y[i : i + batch_size]
+
 ```
-
-Pytorch generates a lot of overhead
-
 
 
 ### Run the benchmark for yourself
@@ -209,7 +214,7 @@ Pytorch generates a lot of overhead
 
 ```bash
 cmake -B build -DENABLE_CUDA=OFF -DBUILD_BENCHMARK=ON
-make --build build
+cmake --build build
 ./build/benchmark/deepmodel_benchmark
 ```
 
@@ -217,7 +222,7 @@ make --build build
 
 ```bash
 cmake -B build -DENABLE_CUDA=ON -DBUILD_BENCHMARK=ON
-make --build build
+cmake --build build
 ./build/benchmark/deepmodel_benchmark
 ```
 

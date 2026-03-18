@@ -49,7 +49,7 @@ else()
 
     find_package(OpenMP)
     if(OpenMP_CXX_FOUND)
-        target_link_libraries(DeepModel PRIVATE OpenMP::OpenMP_CXX)
+        target_link_libraries(DeepModel PUBLIC OpenMP::OpenMP_CXX)
     endif()
 
         target_compile_options(DeepModel PRIVATE

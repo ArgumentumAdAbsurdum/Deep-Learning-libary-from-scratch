@@ -124,6 +124,9 @@ class NeuralNetwork
 {   
 private:
 
+    static std::mt19937 gen;
+
+
     bool imported = false;
     bool print = true;
     
@@ -131,7 +134,6 @@ private:
 
     size_t lfunc_type;
     std::vector<size_t> afunc_type;
-
 
     size_t input_layer_neurons;
     size_t output_layer_neurons;
@@ -333,6 +335,12 @@ public:
      * 
      */
     void save_weights(const std::string &filename);
+
+    /**
+     * @brief Sets the seed for this class and matrix.
+     * 
+     */
+    static void set_seed(size_t seed);
 };
 
 

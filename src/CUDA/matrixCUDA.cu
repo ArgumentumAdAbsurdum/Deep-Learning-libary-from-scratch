@@ -5,19 +5,23 @@
 #include <algorithm>
 #include "kernel.cuh"
 
+std::mt19937 matrix<CUDA>::gen(128);
+
 
 matrix<CUDA>::matrix() : n(0), h(0), c(0), r(0), data(nullptr), owns_memory(false)
 {
+    
 }
 
 matrix<CUDA>::matrix(const matrix<CUDA>& other) : r(other.r), c(other.c), n(other.n), h(other.h)
 {
+
     //cudaMalloc(&this->data, sizeof(float) * n);
     this->data = memory_pool<CUDA>::instance().allocate(n);
     cudaMemcpy(this->data, other.data, sizeof(float) * other.n, cudaMemcpyDeviceToDevice);
 }
 
-matrix<CUDA>::matrix(matrix<CUDA>&& other) noexcept : n(other.n), r(other.r), c(other.c), h(other.h), data(other.data)
+matrix<CUDA>::matrix(matrix<CUDA>&& other) noexcept : n(other.n), r(other.r), c(other.c), h(other.h), data(other.data), owns_memory(other.owns_memory)
 {
     other.n = 0;
     other.r = 0;
@@ -29,7 +33,9 @@ matrix<CUDA>::matrix(matrix<CUDA>&& other) noexcept : n(other.n), r(other.r), c(
 matrix<CUDA>::matrix(const size_t rows, const size_t columns) : r(rows), c(columns), h(1)
 {
     this->n = r * c;
-    //cudaMalloc(&this->data, sizeof(float) * n);
+    
+
+   
     this->data = memory_pool<CUDA>::instance().allocate(n);
 }
 
@@ -52,13 +58,10 @@ matrix<CUDA>::matrix(const size_t rows, const size_t columns, float val) : matri
 matrix<CUDA>::matrix(const size_t rows, const size_t columns, float start, float end) : matrix(rows, columns)
 {
     std::vector<float> arr(n);
-    std::mt19937 gen(
-        std::random_device{}()
-    );
     std::uniform_real_distribution<float> dist(start, end);
 
     for (size_t i = 0; i < this->n; ++i){
-        arr[i] = dist(gen);
+        arr[i] = dist(matrix<CUDA>::gen);
     }
     cudaMemcpy(this->data, arr.data(), sizeof(float) * n, cudaMemcpyHostToDevice);
 
@@ -114,15 +117,11 @@ matrix<CUDA> matrix<CUDA>::create_stacked_matrix(const size_t rows, const size_t
 {
     matrix<CUDA> result = create_stacked_matrix(rows, columns, height);
     std::vector<float> arr(result.n);
-    
-    std::mt19937 gen(
-        std::random_device{}()
-    );
     std::uniform_real_distribution<float> dist(start, end);
 
     for (size_t i = 0; i < result.n; ++i)
     {
-        arr[i] = dist(gen);
+        arr[i] = dist(matrix<CUDA>::gen);
     }
     cudaMemcpy(result.data, arr.data(), sizeof(float) * result.n, cudaMemcpyHostToDevice);
     return result;
@@ -138,7 +137,7 @@ matrix<CUDA> matrix<CUDA>::slice_stacked_matrix(size_t start, size_t end)
     return matrix<CUDA>(this->data + start * mat_elements(), r,c, end - start);
 }
 
-// ------------------------------------------
+
 
 matrix<CUDA> matrix<CUDA>::reduce_sum(const matrix<CUDA> &a)
 {

@@ -42,13 +42,18 @@ void benchmark_adam(const size_t batch_size, const size_t epochs, NeuralNetwork 
 
 int main()
 {
-    omp_set_num_threads(8);
+    #ifndef ENABLE_CUDA
+        omp_set_num_threads(8);
+    #endif
+
     Dataset data = Dataset(path);
     
     data.normalize();
     data.one_hot_encode();     
 
     auto [train, test] = data.split(0.8);
+
+    NeuralNetwork::set_seed(128);
 
     NeuralNetwork nn;
     nn.disable_print();

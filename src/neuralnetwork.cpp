@@ -2,6 +2,7 @@
 #include <sstream>
 #include <iomanip>
 
+std::mt19937 NeuralNetwork::gen(128);
 
 NeuralNetwork::NeuralNetwork() : input_layer_neurons(0), output_layer_neurons(0)
 {
@@ -218,7 +219,6 @@ std::vector<Matrix> NeuralNetwork::layer_outputs(const Matrix &input)
 
 void NeuralNetwork::gradient_descent(const size_t steps, Dataset& ds, double lr , double lambda, size_t batch_size)
 {
-
     if(print)
         std::cout << "==================[TRAINING]=====================" << std::endl;
 
@@ -229,8 +229,6 @@ void NeuralNetwork::gradient_descent(const size_t steps, Dataset& ds, double lr 
     std::vector<Matrix> bgradients;
     bgradients.resize(bias_matrices.size());
 
-    std::random_device dev;
-    std::mt19937 rng(dev());
     std::uniform_int_distribution<std::mt19937::result_type> dist(0, ds.input.height() / batch_size - 1); 
 
     for(size_t i = 0; i < weight_matrices.size(); i++)
@@ -241,6 +239,10 @@ void NeuralNetwork::gradient_descent(const size_t steps, Dataset& ds, double lr 
 
     for(size_t step = 1; step <= steps; step++)
     {
+        size_t batchidx = dist(gen);
+        size_t start = batchidx * batch_size;
+        size_t end   = std::min(start + batch_size, ds.input.height());
+
         if(print)
             print_status(step, steps, batch_size, ds.input.height(), current_epoch);
 
@@ -249,10 +251,6 @@ void NeuralNetwork::gradient_descent(const size_t steps, Dataset& ds, double lr 
             wgradients[i].set(0);
             bgradients[i].set(0);
         }
-
-        size_t batchidx = dist(rng);
-        size_t start = batchidx * batch_size;
-        size_t end   = std::min(start + batch_size, ds.input.height());
 
         std::vector<Matrix> Z;
  
@@ -344,8 +342,6 @@ void NeuralNetwork::fit(const size_t epochs, Dataset &ds, ADAM_Optimizer &adam)
     bias_variance.resize(weight_matrices.size());
 
 
-    std::random_device dev;
-    std::mt19937 rng(dev());
     std::uniform_int_distribution<std::mt19937::result_type> dist(0, ds.input.height() / adam.batch_size - 1); 
 
 
@@ -376,7 +372,7 @@ void NeuralNetwork::fit(const size_t epochs, Dataset &ds, ADAM_Optimizer &adam)
 
 
 
-        size_t batchidx = dist(rng);
+        size_t batchidx = dist(gen);
         size_t start = batchidx * adam.batch_size;
         size_t end   = std::min(start + adam.batch_size, ds.input.height());
 
@@ -720,4 +716,10 @@ void NeuralNetwork::save_weights(const std::string &filename)
         file << "\n";
     }
 
+}
+
+void NeuralNetwork::set_seed(size_t s)
+{
+    Matrix::gen.seed(s);
+    NeuralNetwork::gen.seed(s);
 }
