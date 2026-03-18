@@ -236,17 +236,14 @@ python3 benchmark/pytorch_benchmark.py
 ---
 ## The algorithm
 
-
-### Regularized Loss
- 
-$$
-\mathcal{J} = \mathcal{L}(\hat{y}, y) + \frac{\lambda}{2N} \sum_{\ell=1}^{L} \|W^{(\ell)}\|_F^2
-$$
- 
 ### Backpropagation
  
-**Output layer** — $\delta^{(L)} = \frac{\partial \mathcal{L}}{\partial a^{(L)}} \odot f'^{(L)}(z^{(L)})$
- 
+**Output layer** — 
+
+$$
+\delta^{(L)} = \frac{\partial \mathcal{L}}{\partial a^{(L)}} \odot f'^{(L)}(z^{(L)})$
+$$
+
 **Hidden layers** — for $\ell = L-1, \dots, 1$:
  
 $$
@@ -287,7 +284,7 @@ cmake -B build -DENABLE_CUDA=ON -DBUILD_EXAMPLES=ON
 cmake --build build
 ```
 
-### run:
+### Run:
 
 #### 1 mnist:
 ```bash
@@ -298,7 +295,7 @@ Place it into /datasets with name 'mnist_train.csv'.
 
 #### 2 fasion-mnist:
 ```bash
-./build/fashion_nist
+./build/fashion_mnist
 ```
 **Requires the fashion mnist dataset as .csv**
 Place it into /datasets with name 'fasion_mnist.csv'.
