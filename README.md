@@ -37,13 +37,13 @@ The Github repo contains training examples with mnist and fashion-mnist, while b
 ## How to build
 
 ### Requirements
-C++17 GNU / Clang 
+`C++17 GNU / Clang` 
 
-OpenMP
+`OpenMP`
 
-CUDA Toolkit (Optional for CUDA version)
+`CUDA Toolkit` (Optional for CUDA version)
 
-Cmake
+`Cmake`
 
 
 ### CPU-only
@@ -236,27 +236,36 @@ python3 benchmark/pytorch_benchmark.py
 ---
 ## The algorithm
 
-### Backpropagation
+
+### Basic Backpropagation with weight Update
  
-**Output layer** — 
-
 $$
-\delta^{(L)} = \frac{\partial \mathcal{L}}{\partial a^{(L)}} \odot f'^{(L)}(z^{(L)})$
+\delta^{(L)} = \frac{\partial \mathcal{L}}{\partial a^{(L)}} \odot f'^{(L)}(z^{(L)})
 $$
 
-**Hidden layers** — for $\ell = L-1, \dots, 1$:
+for $\ell = L-1, \dots, 1$:
  
 $$
 \delta^{(\ell)} = \left(W^{(\ell+1)}\right)^\top \delta^{(\ell+1)} \odot f'^{(\ell)}(z^{(\ell)})
 $$
  
-### Weight Update with L2
- 
 $$
-W^{(\ell)} \leftarrow W^{(\ell)}\!\left(1 - \frac{\eta\lambda}{N}\right) - \frac{\eta}{N}\,\delta^{(\ell)}\!\left(a^{(\ell-1)}\right)^\top
+W^{(\ell)} \leftarrow W^{(\ell)} - lr \delta^{\ell} 
 $$
- 
-The factor $\left(1 - \frac{\eta\lambda}{N}\right)$ is the **weight decay** term. Biases are excluded from regularization.
+
+### Backpropagation with L2 regulazation
+
+$$
+\mathcal{J} = \mathcal{L}(\hat{y}, y) + \frac{\lambda}{2N} \sum_{\ell=1}^{L} \|W^{(\ell)}\|_F^2
+$$
+
+
+$$
+W^{(\ell)} \leftarrow W^{(\ell)} (1 - \frac{\eta \lambda}{N}) 
+$$
+
+
+### Backpropagation with Adam
 
 
 ---
@@ -264,8 +273,8 @@ The factor $\left(1 - \frac{\eta\lambda}{N}\right)$ is the **weight decay** term
 
 There are 3 examples.
 
-1. Training on the mnist dataset.
-2. Training on the fashion-mnist dataset.
+1. Training on the mnist dataset with ADAM.
+2. Training on the fashion-mnist dataset with ADAM.
 3. Matrix operations with the linear algebra engine.
 
 ### Build
@@ -304,9 +313,55 @@ Place it into /datasets with name 'fasion_mnist.csv'.
 ```bash
 ./build/linear_algebra
 ```
+---
+## API Reference
+ 
+### `NeuralNetwork`
+ 
+| Method | Description |
+|--------|-------------|
+| `configure_input_layer(n)` | Set input dimensionality |
+| `add_layer(size, activation)` | Append a fully-connected layer |
+| `configure_loss_function(loss)` | Set training loss. Possible inputs under `loss functions` |
+| `initalise_random_weights()` | Sets random weights in range [-0.1, 0.1] |
+| `initalise_random_weights(begin, end)` | Set randoms weights in range [begin, end] |
+| `initalise_xavier_weights()` | Xavier initialisation |
+| `initalise_he_weights()` | He initialisation |
+| `fit(epochs, dataset, optimizer_type, learnrate)` | Run training loop for SGD, BGD or for mini batch GD (batch size = 64). See Optimizer types for possible optimizer_types. |
+| `fit(epochs, dataset, optimizer_type, learnrate, batch_size)` | Run training loop and set batch size manually (works only for mini batch GD). See Optimizer types for possible optimizer_types. |
+| `fit(epochs, dataset, ADAM_Optimizer)` | Run training loop with an initalisation of ADAM. See Adam for correct initalisation.|
+| `set_loss_weights(weights)` | Set loss weights with a vector<size_t> with the size of the output layer |
+| `performance(dataset)` | Prints accuracy |
+| `save_weights(path)` | Store weigths in a file |
+| `load_weights(path)` | Read weights from a file |
+ 
+### `Dataset`
+ 
+| Method | Description |
+|--------|-------------|
+| `normalize()` | Min-max normalize all features |
+| `one_hot_encode()` | Convert integer labels to one-hot vectors |
+| `split(ratio)` | Returns `[train, test]` pair |
+| `print_information()` | Print shape and class distribution |
+
+### `Matrix`
+
+| Method | Description |
+|--------|-------------|
+| `normalize()` | Min-max normalize all features |
+| `one_hot_encode()` | Convert integer labels to one-hot vectors |
+| `split(ratio)` | Returns `[train, test]` pair |
+| `print_information()` | Print shape and class distribution |
+
+### `Optimizer types`
+
+### `Loss functions`
 
 
+### `Activation functions`
 
 
+### `ADAM`
 
 
+---
