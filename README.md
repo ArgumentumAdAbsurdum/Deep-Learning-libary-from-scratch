@@ -314,30 +314,30 @@ There are 3 examples.
 2. Training on the Fashion-MNIST dataset with ADAM.
 3. Matrix operations with the linear algebra engine.
  
-### Build
- 
-#### CPU-only
+
+#### CPU-Only build
  
 ```bash
 cmake -B build -DENABLE_CUDA=OFF -DBUILD_EXAMPLES=ON
 cmake --build build
 ```
  
-#### CUDA Support
+#### CUDA Support build
  
 ```bash
 cmake -B build -DENABLE_CUDA=ON -DBUILD_EXAMPLES=ON
 cmake --build build
 ```
  
-### Run:
- 
-#### 1. MNIST:
-
+#### 1 · MNIST:
 
 ![MNIST sample digits](assets/MNIST_dataset_example.png)
+
 *Figure 1: Sample digits from the MNIST dataset (LeCun et al., 1998). Image by Josef Steppan, [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/), via Wikimedia Commons.*
 
+In this example we train a model on pictures of digit's to classify them correctly.
+
+**Run with:**
 
 ```bash
 ./build/mnist
@@ -345,14 +345,17 @@ cmake --build build
 **Requires the MNIST dataset as .csv**  
 Place it into /datasets with the name 'mnist_train.csv'.
  
-#### 2. Fashion-MNIST:
+#### 2 · Fashion-MNIST:
+
+
+
 ```bash
 ./build/fashion_mnist
 ```
 **Requires the Fashion-MNIST dataset as .csv**  
 Place it into /datasets with the name 'fashion_mnist.csv'.
  
-#### 3. Linear Algebra:
+#### 3 · Linear Algebra:
 ```bash
 ./build/linear_algebra
 ```
