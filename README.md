@@ -8,6 +8,7 @@
 ## Overview
 
 This library is implemented entirely in C++ and has a custom linear algebra engine, which is optimized for both CUDA and CPU-only execution.
+The same code runs on both backends without any modifications.
 Every operation such as matrix transposing, matrix multiplication, and the entire optimization algorithm is implemented by hand.
 It also contains its own Dataset class, which gives the user the ability to read and edit .csv datasets.
 The GitHub repository contains training examples with MNIST and Fashion-MNIST, and also includes benchmarks against PyTorch.
