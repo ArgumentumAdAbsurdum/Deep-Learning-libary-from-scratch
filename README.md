@@ -232,38 +232,97 @@ python3 benchmark/pytorch_benchmark.py
 **Requirements** pandas & pytorch
 
 ---
-## The algorithm
 
-
-### Basic Backpropagation with weight Update
+## 1 · Basic Backpropagation
+ 
+### Forward pass
  
 $$
-\delta^{(L)} = \frac{\partial \mathcal{L}}{\partial a^{(L)}} \odot f'^{(L)}(z^{(L)})
-$$
-
-for $\ell = L-1, \dots, 1$:
- 
-$$
-\delta^{(\ell)} = \left(W^{(\ell+1)}\right)^\top \delta^{(\ell+1)} \odot f'^{(\ell)}(z^{(\ell)})
+z^{(\ell)} = W^{(\ell)} a^{(\ell-1)} + b^{(\ell)}, \qquad a^{(\ell)} = f^{(\ell)}\!\left(z^{(\ell)}\right)
 $$
  
+### Backward pass
+ 
+**Output layer:**
+ 
 $$
-W^{(\ell)} \leftarrow W^{(\ell)} - lr \delta^{\ell} 
+\delta^{(L)} = \frac{\partial \mathcal{L}}{\partial a^{(L)}} \odot f'^{(L)}\!\left(z^{(L)}\right)
+$$
+ 
+**Hidden layers** $(\ell = L-1, \dots, 1)$:
+ 
+$$
+\delta^{(\ell)} = \left(W^{(\ell+1)}\right)^\top \delta^{(\ell+1)} \odot f'^{(\ell)}\!\left(z^{(\ell)}\right)
+$$
+ 
+### Weight & bias update
+ 
+$$
+W^{(\ell)} \leftarrow W^{(\ell)} - \eta \; \delta^{(\ell)} \left(a^{(\ell-1)}\right)^\top
+$$
+ 
+$$
+b^{(\ell)} \leftarrow b^{(\ell)} - \eta \; \delta^{(\ell)}
 $$
 
-### Backpropagation with L2 regulazation
+---
 
+---
+ 
+## 2 · Backpropagation with L2 Regularisation
+ 
+### Regularised objective
+ 
 $$
-\mathcal{J} = \mathcal{L}(\hat{y}, y) + \frac{\lambda}{2N} \sum_{\ell=1}^{L} \|W^{(\ell)}\|_F^2
+\mathcal{J} = \mathcal{L}(\hat{y},\, y) + \frac{\lambda}{2N} \sum_{\ell=1}^{L} \left\|W^{(\ell)}\right\|_F^2
 $$
-
-
+ 
+The $\delta$ computation is identical to Section 1. Only the weight update gains a decay term:
+ 
+### Weight update (weight decay + gradient step)
+ 
 $$
-W^{(\ell)} \leftarrow W^{(\ell)} (1 - \frac{\eta \lambda}{N}) 
+W^{(\ell)} \leftarrow W^{(\ell)}\!\left(1 - \frac{\eta\lambda}{N}\right) - \eta \; \delta^{(\ell)} \left(a^{(\ell-1)}\right)^\top
 $$
-
-
-### Backpropagation with Adam
+ 
+$$
+b^{(\ell)} \leftarrow b^{(\ell)} - \eta \; \delta^{(\ell)}
+$$
+ 
+ 
+---
+ 
+## 3 · Backpropagation with Adam
+ 
+The $\delta$ computation is identical to Section 1. Adam replaces the vanilla gradient step with an adaptive moment-based update.
+ 
+**Hyperparameters:** $\beta_1 = 0.9$, $\beta_2 = 0.999$, $\varepsilon = 10^{-8}$
+ 
+Let $g_t = \delta^{(\ell)} \left(a^{(\ell-1)}\right)^\top$ be the gradient at step $t$.
+ 
+### 1st moment (mean)
+ 
+$$
+m_t = \beta_1\, m_{t-1} + (1 - \beta_1)\, g_t
+$$
+ 
+### 2nd moment (uncentred variance)
+ 
+$$
+v_t = \beta_2\, v_{t-1} + (1 - \beta_2)\, g_t^2
+$$
+ 
+### Bias-corrected estimates
+ 
+$$
+\hat{m}_t = \frac{m_t}{1 - \beta_1^t}, \qquad \hat{v}_t = \frac{v_t}{1 - \beta_2^t}
+$$
+ 
+### Weight update
+ 
+$$
+W^{(\ell)} \leftarrow W^{(\ell)} - \eta \; \frac{\hat{m}_t}{\sqrt{\hat{v}_t} + \varepsilon}
+$$
 
 
 ---
@@ -446,6 +505,7 @@ adam.epsilon = 10e-8;
 adam.lambda = 10e-4;
 adam.batch_size = 64;
 ```
-You don't need to specifiy the value, if you wish to use the default one.
+
+If you wish to use a default value, you dont need to specify it.
 
 ---
