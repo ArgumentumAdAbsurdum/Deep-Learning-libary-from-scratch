@@ -229,8 +229,6 @@ matrix<CPU> matrix<CPU>::bcast_mat_mul_to_stacked_matrix(const matrix<CPU> &a, c
     if(a.columns() != b.rows() || b.height() != 1)
         throw std::runtime_error("bcast_mat_mul_to_stacked_matrix : matrix shapes do not match. a.columns() needs to be equal to b.rows()");
 
-   
-
     const size_t rows = a.rows();
     const size_t cols = b.columns();
     const size_t inner = a.columns();
