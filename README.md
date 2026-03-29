@@ -34,47 +34,7 @@ The GitHub repository contains training examples with MNIST and Fashion-MNIST, a
 ### Loss Functions
 `CROSS ENTROPY`  `QUADRATIC (MLE)`
 
----
 
-## How to Build
-
-### Requirements
-
-`C++17 GNU / Clang` 
-`CMake`
-`OpenMP` (Optional for CPU-only version)
-`CUDA Toolkit` (Optional for CUDA version)
-
-### CPU-Only
-
-```bash
-mkdir build
-cmake -B build -DENABLE_CUDA=OFF
-cmake --build build
-```
-
-### CUDA Support
-
-```bash
-mkdir build
-cmake -B build -DENABLE_CUDA=ON
-cmake --build build
-```
-### Adding Your Own Files
-
-Add this to the 'CMakeLists.txt':
-
-```cmake
-add_executable(my_program my_program.cpp)
-target_link_libraries(my_program PRIVATE DeepModel)
-```
-
-Then run: 
-
-```bash
-cmake --build build
-./build/my_program
-```
 
 ---
 
@@ -82,10 +42,6 @@ cmake --build build
 
 There are multiple examples to view inside /examples.
 Here is the training of a network on the MNIST numbers dataset:
-
-**You need to install the MNIST dataset as .csv and place it into the dataset folder to run this program.**
-Dataset source: MNIST (LeCun et al., 1998) – available at https://github.com/phoebetronic/mnist
-
 
 ```cpp
 #include <iostream>
@@ -135,6 +91,35 @@ int main()
     nn.save_weights("mnist_example_weights.txt");
 }
 ```
+### Requirements
+
+`C++17 GNU / Clang (or higher)` 
+`CMake`
+`OpenMP` (Optional for CPU-only version)
+`CUDA Toolkit` (Optional for CUDA version)
+
+### Run CPU-Only
+```bash
+git clone https://github.com/ArgumentumAdAbsurdum/Deep-Learning-library-from-scratch.git
+cd Deep-Learning-library-from-scratch
+rm -rf build
+bash setup/download_mnist.sh
+cmake -B build -DENABLE_CUDA=OFF -DBUILD_EXAMPLES=ON
+cmake --build build
+./build/examples/mnist
+```
+
+### Run with CUDA Support
+```bash
+git clone https://github.com/ArgumentumAdAbsurdum/Deep-Learning-library-from-scratch.git
+cd Deep-Learning-library-from-scratch
+rm -rf build
+bash setup/download_mnist.sh
+cmake -B build -DENABLE_CUDA=ON -DBUILD_EXAMPLES=ON
+cmake --build build
+./build/examples/mnist
+```
+
 
 ---
 
@@ -196,6 +181,10 @@ Source: https://docs.pytorch.org/tutorials/beginner/blitz/autograd_tutorial.html
 #### DeepModel : CPU-only
 
 ```bash
+git clone https://github.com/ArgumentumAdAbsurdum/Deep-Learning-library-from-scratch.git
+cd Deep-Learning-library-from-scratch
+rm -rf build
+bash setup/download_mnist.sh
 cmake -B build -DENABLE_CUDA=OFF -DBUILD_BENCHMARK=ON
 cmake --build build
 ./build/benchmark/deepmodel_benchmark
@@ -204,6 +193,10 @@ cmake --build build
 #### DeepModel : CUDA Support
 
 ```bash
+git clone https://github.com/ArgumentumAdAbsurdum/Deep-Learning-library-from-scratch.git
+cd Deep-Learning-library-from-scratch
+rm -rf build
+bash setup/download_mnist.sh
 cmake -B build -DENABLE_CUDA=ON -DBUILD_BENCHMARK=ON
 cmake --build build
 ./build/benchmark/deepmodel_benchmark
@@ -213,6 +206,7 @@ cmake --build build
 #### Pytorch : CPU-only 
 
 ```bash
+bash setup/download_mnist.sh
 python3 benchmark/pytorch_benchmark.py
 ```
 **Requirements** pandas & pytorch
