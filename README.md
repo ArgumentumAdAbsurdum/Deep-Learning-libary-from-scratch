@@ -98,12 +98,16 @@ int main()
 `OpenMP` (Optional for CPU-only version)
 `CUDA Toolkit` (Optional for CUDA version)
 
-### Run CPU-Only
+### Install
+
 ```bash
 git clone https://github.com/ArgumentumAdAbsurdum/Deep-Learning-library-from-scratch.git
 cd Deep-Learning-library-from-scratch
-rm -rf build
 bash setup/download_mnist.sh
+```
+
+### Run CPU-Only
+```bash
 cmake -B build -DENABLE_CUDA=OFF -DBUILD_EXAMPLES=ON
 cmake --build build
 ./build/examples/mnist
@@ -111,10 +115,6 @@ cmake --build build
 
 ### Run with CUDA Support
 ```bash
-git clone https://github.com/ArgumentumAdAbsurdum/Deep-Learning-library-from-scratch.git
-cd Deep-Learning-library-from-scratch
-rm -rf build
-bash setup/download_mnist.sh
 cmake -B build -DENABLE_CUDA=ON -DBUILD_EXAMPLES=ON
 cmake --build build
 ./build/examples/mnist
@@ -178,13 +178,20 @@ Source: https://docs.pytorch.org/tutorials/beginner/blitz/autograd_tutorial.html
 
 ### Run the benchmark for yourself
 
-#### DeepModel : CPU-only
+
+
+#### Install
 
 ```bash
 git clone https://github.com/ArgumentumAdAbsurdum/Deep-Learning-library-from-scratch.git
 cd Deep-Learning-library-from-scratch
-rm -rf build
 bash setup/download_mnist.sh
+```
+
+
+#### DeepModel : CPU-only
+
+```bash
 cmake -B build -DENABLE_CUDA=OFF -DBUILD_BENCHMARK=ON
 cmake --build build
 ./build/benchmark/deepmodel_benchmark
@@ -193,10 +200,6 @@ cmake --build build
 #### DeepModel : CUDA Support
 
 ```bash
-git clone https://github.com/ArgumentumAdAbsurdum/Deep-Learning-library-from-scratch.git
-cd Deep-Learning-library-from-scratch
-rm -rf build
-bash setup/download_mnist.sh
 cmake -B build -DENABLE_CUDA=ON -DBUILD_BENCHMARK=ON
 cmake --build build
 ./build/benchmark/deepmodel_benchmark
@@ -206,7 +209,6 @@ cmake --build build
 #### Pytorch : CPU-only 
 
 ```bash
-bash setup/download_mnist.sh
 python3 benchmark/pytorch_benchmark.py
 ```
 **Requirements** pandas & pytorch
